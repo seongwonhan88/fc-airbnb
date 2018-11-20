@@ -23,9 +23,6 @@ MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 MEDIA_URL = '/media/'
 
 
-ALLOWED_HOSTS = []
-
-
 AUTH_USER_MODEL = 'members.User'
 
 # Application definition
