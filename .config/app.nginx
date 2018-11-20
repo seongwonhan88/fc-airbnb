@@ -1,0 +1,28 @@
+#server {
+#    return 404;
+#}
+
+# /etc/nginx/sites-available
+server {
+    # listen on port 80
+    listen 80;
+    #encoding
+    charset utf-8;
+    #requiest/response max size
+    client_max_body_size 128M;
+    #('/' starts) -> responding to all url connection
+    location / {
+        # uwsgi connection using unix socket
+        # "tmp/app.sock" file is used
+        uwsgi_pass unix:///tmp/app.sock;
+        include uwsgi_params;
+    }
+    #ip hashing config.
+    location /static/ {
+        alias /srv/project/.static/;
+    }
+    location /media/ {
+        alias /srv/project/.media/;
+    }
+
+}
