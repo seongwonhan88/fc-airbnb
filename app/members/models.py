@@ -4,3 +4,4 @@ from django.db import models
 
 class User(AbstractUser):
     img_profile = models.ImageField(upload_to='user', blank=True)
+    user_introduction = models.TextField()
