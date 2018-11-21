@@ -1,11 +1,15 @@
-#server {
-#    return 404;
-#}
+server {
+    return 404;
+}
 
 # /etc/nginx/sites-available
 server {
     # listen on port 80
     listen 80;
+    listen 443;
+    #domain name localhost
+    server_name *.elasticbeanstalk.com;
+
     #encoding
     charset utf-8;
     #requiest/response max size
@@ -23,6 +27,10 @@ server {
     }
     location /media/ {
         alias /srv/project/.media/;
+    }
+
+    if ($http_x_forwarded_proto = 'http'){
+    return 301 https://$host$request_uri;
     }
 
 }
