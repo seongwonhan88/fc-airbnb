@@ -2,14 +2,17 @@ from .base import *
 
 DEBUG = False
 
-#ALLOWED_HOSTS
+# SECRETS
+secrets = json.load(open(os.path.join(SECRET_DIR, 'production.json')))
+
+# ALLOWED_HOSTS
 ALLOWED_HOSTS = [
+    "backends.xyz",
+    "www.backends.xyz",
+    "api.backends.xyz",
     ".elasticbeanstalk.com",
     "localhost",
 ]
-
-# SECRETS
-secrets = json.load(open(os.path.join(SECRET_DIR, 'production.json')))
 
 # DATABASE
 DATABASES = secrets['DATABASES']
@@ -23,4 +26,3 @@ AWS_S3_REGION_NAME = 'ap-northeast-2'
 
 DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-

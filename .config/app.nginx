@@ -8,7 +8,7 @@ server {
     listen 80;
     listen 443;
     #domain name localhost
-    server_name *.elasticbeanstalk.com;
+    server_name www.backends.xzy, backends.xyz, api.backends.xyz, *.elasticbeanstalk.com;
 
     #encoding
     charset utf-8;
