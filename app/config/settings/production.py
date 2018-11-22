@@ -35,6 +35,54 @@ sentry_sdk.init(
 )
 
 
+# LOGGING
+LOG_DIR = os.path.join(ROOT_DIR, '.log')
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR, exist_ok=True)
+
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'default': {
+            'format': '[%(levelname)s] %(name)s (%(asctime)s)\n\t%(message)s'
+        },
+    },
+    'handlers': {
+        'file_error': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'ERROR',
+            'filename': os.path.join(LOG_DIR, 'error.log'),
+            'formatter': 'default',
+            'maxBytes': 1048576,
+            'backupCount': 10,
+        },
+        'file_info': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'INFO',
+            'filename': os.path.join(LOG_DIR, 'info.log'),
+            'formatter': 'default',
+            'maxBytes': 1048576,
+            'backupCount': 10,
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'INFO',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': [
+                'file_error',
+                'file_info',
+                'console',
+            ],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    }
+}
+
+# EC2
 def is_ec2_linux():
     """Detect if we are running on an EC2 Linux Instance
        See http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/identify_ec2_instances.html
