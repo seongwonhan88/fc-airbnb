@@ -19,18 +19,17 @@ class Room(models.Model):
     room_name = models.CharField(max_length=200)
     room_type = models.CharField(max_length=1, choices=ROOM_TYPES)
     price = models.IntegerField()
-    amenities = models.ForeignKey('Amenity', on_delete=models.SET_NULL, null=True, related_query_name='room_amenities')
+    amenities = models.ManyToManyField('Amenity', blank=True, null=True)
+    home_info = models.TextField()
 
     def __str__(self):
         return self.room_name
 
-class Amenity(models.Model):
-    room = models.ForeignKey('Room',
-                             on_delete=models.SET_NULL,
-                             null=True,
-                             )
-    title = models.CharField(max_length=30)
 
+class Amenity(models.Model):
+    value = models.CharField(max_length=50)
+    help_text = models.CharField(max_length=100)
+    key = models.CharField(max_length=50)
 
     def __str__(self):
         return self.title
