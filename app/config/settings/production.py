@@ -1,4 +1,6 @@
 from .base import *
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 DEBUG = False
 
@@ -25,6 +27,12 @@ AWS_S3_REGION_NAME = 'ap-northeast-2'
 
 DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# SENTRY
+sentry_sdk.init(
+    dsn=secrets['SENTRY_DSN'],
+    integrations=[DjangoIntegration()]
+)
 
 
 def is_ec2_linux():
