@@ -37,8 +37,14 @@ INSTALLED_APPS = [
     'members',
     'home',
     'django_extensions',
+    'corsheaders',
 
 ]
+
+# CORS settings: Frontend DNS 생성 시 추가필요
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -48,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
