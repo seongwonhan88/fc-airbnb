@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'members',
     'home',
-    'django_extensions',
     'corsheaders',
 
 ]
