@@ -80,3 +80,23 @@ class Booking(models.Model):
         :return:
         """
         pass
+
+
+class HouseImg(models.Model):
+    room = models.ForeignKey('Room',
+                             on_delete=models.CASCADE,
+                             related_name='room_house_imgs',)
+    url = models.URLField()
+
+    def __str__(self):
+        return self.room
+
+
+class Booking(models.Model):
+    room = models.ForeignKey(Room)
+    user = models.ForeignKey(User)
+    date_int = models.DateField()
+    date_out = models.DateField
+    reserved_date = models.DateField
+    person_capacity = Room.objects.filter(pk=pk)
+    num_guest = models.IntegerField(max())
