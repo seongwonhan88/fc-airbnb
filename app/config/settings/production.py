@@ -26,7 +26,8 @@ AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_S3_REGION_NAME = 'ap-northeast-2'
 
 DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# 1 회 실행 이후 static 늘어날 경우 생성, api만 보낼 경우 특별하게 추가될 것으로 보이지 않음
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # SENTRY
 sentry_sdk.init(
