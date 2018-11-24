@@ -1,6 +1,6 @@
-#server {
-#    return 404;
-#}
+server {
+    return 404;
+}
 
 # /etc/nginx/sites-available
 server {
