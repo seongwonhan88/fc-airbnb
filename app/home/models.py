@@ -1,5 +1,7 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
+User = get_user_model()
 
 class Room(models.Model):
     bathrooms = models.IntegerField()
@@ -20,9 +22,11 @@ class Room(models.Model):
     lng = models.FloatField()
 
     amenities = models.ManyToManyField('Amenity')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.room_name
+
 
 
 class Amenity(models.Model):
@@ -54,3 +58,25 @@ class HouseInfo(models.Model):
     photo3 = models.ImageField(upload_to='picture/host/listing/')
     photo4 = models.ImageField(upload_to='picture/host/listing/')
     photo5 = models.ImageField(upload_to='picture/host/listing/')
+
+
+class Booking(models.Model):
+    # CHOICES는 room보다 나중에 나와야 호출이 가능, num_guest의 최대치는 room의 person_capacity를 초과하지 못함
+    room = models.ForeignKey(Room, on_delete=models.CASCADE,related_name='booking_info')
+    CHOICES = range(1, room.person_capacity+1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    num_guest = models.IntegerField(choices=CHOICES)
+    # 실제 머무른 기간
+    check_in_date = models.DateField()
+    check_out_date = models.DateField()
+    # 예약을 신청한 기간
+    reserved_date = models.DateTimeField(auto_now_add=True)
+
+
+    def booking_request(self, request):
+        """
+        default는 available인데, 사용자가 예약을 하면 상태가 booked로 변경
+        :param request:
+        :return:
+        """
+        pass
