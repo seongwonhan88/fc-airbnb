@@ -9,6 +9,7 @@ secrets = json.load(open(os.path.join(SECRET_DIR, 'production.json')))
 
 # ALLOWED_HOSTS
 ALLOWED_HOSTS = [
+    'localhost',
     "backends.xyz",
     "www.backends.xyz",
     "api.backends.xyz",

@@ -1,14 +1,8 @@
-server {
-    return 404;
-}
-
 # /etc/nginx/sites-available
 server {
     # listen on port 80
     listen 80;
-#    listen 443;
-    #domain name localhost
-    server_name www.backends.xyz, backends.xyz, api.backends.xyz, *.elasticbeanstalk.com;
+    server_name localhost www.backends.xyz, backends.xyz, api.backends.xyz, *.elasticbeanstalk.com;
 
     #encoding
     charset utf-8;
@@ -28,9 +22,4 @@ server {
     location /media/ {
         alias /srv/project/.media/;
     }
-#
-#    if ($http_x_forwarded_proto = 'http'){
-#    return 301 https://$host$request_uri;
-#    }
-
 }
