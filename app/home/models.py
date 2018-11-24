@@ -19,7 +19,7 @@ class Room(models.Model):
     lat = models.FloatField()
     lng = models.FloatField()
 
-    amenities = models.ManyToManyField('Amenity', blank=True, null=True)
+    amenities = models.ManyToManyField('Amenity')
 
     def __str__(self):
         return self.room_name
@@ -32,24 +32,6 @@ class Amenity(models.Model):
 
     def __str__(self):
         return self.key
-
-
-class HouseImg(models.Model):
-    room = models.ForeignKey(Room,
-                             on_delete=models.CASCADE,
-                             related_name='room_house_imgs', )
-    url = models.URLField()
-
-    def __str__(self):
-        return self.room
-
-
-class HostThumbnailImg(models.Model):
-    # One To One 모델로 바꾸기
-    room = models.ForeignKey(Room, on_delete=models.CASCADE,
-                             related_name='host_thumbnails', )
-    host_thumbnail_url = models.ImageField(upload_to='pictures/host/', blank=True, null=True)
-    host_thumbnail_url_small = models.ImageField(upload_to='pictures/host/', blank=True, null=True)
 
 
 class HouseInfo(models.Model):
@@ -66,3 +48,9 @@ class HouseInfo(models.Model):
     home_info_4 = models.TextField()
     # 편의시설 모두 보기
     home_info_5 = models.TextField()
+    # 관련 사진들
+    photo1 = models.ImageField(upload_to='picture/host/listing/')
+    photo2 = models.ImageField(upload_to='picture/host/listing/')
+    photo3 = models.ImageField(upload_to='picture/host/listing/')
+    photo4 = models.ImageField(upload_to='picture/host/listing/')
+    photo5 = models.ImageField(upload_to='picture/host/listing/')
