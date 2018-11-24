@@ -40,8 +40,7 @@ class Amenity(models.Model):
 
 class HouseInfo(models.Model):
     # One To One 모델로 바꾸기
-    room = models.ForeignKey(Room, on_delete=models.CASCADE,
-                             related_name='room_infos', )
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='room_info')
     # 숙소하이라이트 부분
     home_info_1 = models.TextField()
     # 기본 설명
@@ -61,11 +60,9 @@ class HouseInfo(models.Model):
 
 
 class Booking(models.Model):
-    # CHOICES는 room보다 나중에 나와야 호출이 가능, num_guest의 최대치는 room의 person_capacity를 초과하지 못함
     room = models.ForeignKey(Room, on_delete=models.CASCADE,related_name='booking_info')
-    CHOICES = range(1, room.person_capacity+1)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    num_guest = models.IntegerField(choices=CHOICES)
+    guest = models.ForeignKey(User, on_delete=models.CASCADE)
+    num_guest = models.IntegerField()
     # 실제 머무른 기간
     check_in_date = models.DateField()
     check_out_date = models.DateField()
@@ -73,10 +70,8 @@ class Booking(models.Model):
     reserved_date = models.DateTimeField(auto_now_add=True)
 
 
-    def booking_request(self, request):
-        """
-        default는 available인데, 사용자가 예약을 하면 상태가 booked로 변경
-        :param request:
-        :return:
-        """
-        pass
+class HostThumbnailImg(models.Model):
+    # one-to-one 모델로 room과 연결
+    room = models.OneToOneField(Room, on_delete=models.CASCADE, related_name='host_thumbnails')
+    host_thumbnail_url = models.ImageField(upload_to='pictures/host/', blank=True, null=True)
+    host_thumbnail_url_small = models.ImageField(upload_to='pictures/host/', blank=True, null=True)
