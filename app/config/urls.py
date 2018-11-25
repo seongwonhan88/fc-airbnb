@@ -21,7 +21,8 @@ from django.urls import path, include
 from home import urls
 
 urlpatterns_api = [
-    path('home/', include('home.urls'))
+    path('home/', include('home.urls')),
+    path('user/', include('members.urls'))
 ]
 
 urlpatterns = [
