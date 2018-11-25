@@ -1,5 +1,0 @@
-branch-defaults:
-  default:
-    environment: null
-global:
-  profile: ebfc
