@@ -1,7 +1,6 @@
-from django.http import Http404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import generics, status
+from rest_framework import status
 
 from .serializers import RoomSerializer
 from .models import Room
@@ -24,14 +23,8 @@ class RoomListingApiView(APIView):
 
 class RoomDetailApiView(APIView):
 
-    def get_object(self, pk):
-        try:
-            return Room.objects.get(pk=pk)
-        except Room.DoesNotExist:
-            raise Http404
-
     def get(self, request, pk, format=None):
-        room = self.get_object(pk)
+        room = Room.objects.get(pk=pk)
         serializer = RoomSerializer(room)
         return Response(serializer.data)
 
