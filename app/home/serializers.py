@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Room, Amenity, HouseInfo, HostThumbnailImg
+from .models import Room, Amenity, RoomInfo, HostImages
 
 
 class AmenitySerializer(serializers.ModelSerializer):
@@ -11,26 +11,26 @@ class AmenitySerializer(serializers.ModelSerializer):
         )
 
 
-class HouseInfoSerializer(serializers.ModelSerializer):
+class RoomInfoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = HouseInfo
+        model = RoomInfo
         fields = (
-            'home_info_1',
-            'home_info_2',
-            'home_info_3',
-            'home_info_4',
-            'home_info_5',
-            'photo1',
-            'photo2',
-            'photo3',
-            'photo4',
-            'photo5',
+            'room_info_1',
+            'room_info_2',
+            'room_info_3',
+            'room_info_4',
+            'room_info_5',
+            'room_photo_1',
+            'room_photo_2',
+            'room_photo_3',
+            'room_photo_4',
+            'room_photo_5',
         )
 
 
 class HostImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = HostThumbnailImg
+        model = HostImages
         fields = (
             'host_thumbnail_url',
             'host_thumbnail_url_small',
@@ -38,7 +38,8 @@ class HostImageSerializer(serializers.ModelSerializer):
 
 
 class RoomSerializer(serializers.ModelSerializer):
-    room_info = serializers.StringRelatedField(many=True, read_only=True)
+    host_images = HostImageSerializer()
+    room_info = RoomInfoSerializer()
     amenities = serializers.StringRelatedField(many=True, read_only=True)
     class Meta:
         model = Room
@@ -59,5 +60,6 @@ class RoomSerializer(serializers.ModelSerializer):
                   # 아래부터 외부모델 연결 필드 값
                   'amenities',
                   'room_info',
+                  'host_images'
                   # 'host_thumbnails',
                   )
