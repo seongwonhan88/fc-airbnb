@@ -1,7 +1,8 @@
 # /etc/nginx/sites-available
 server {
-    # listen on port 80
+    # listen on port 80/443
     listen 80;
+    listen 443;
     server_name localhost www.backends.xyz, backends.xyz, api.backends.xyz, *.elasticbeanstalk.com;
 
     #encoding
@@ -21,5 +22,9 @@ server {
     }
     location /media/ {
         alias /srv/project/.media/;
+    }
+    #HTTP REDIRECT TO HTTPS
+    if ($http_x_forwarded_proto = 'http'){
+    return 301 https://$host$request_uri;
     }
 }
