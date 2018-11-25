@@ -3,6 +3,7 @@ from django.db import models
 
 User = get_user_model()
 
+
 class Room(models.Model):
     bathrooms = models.IntegerField()
     bedrooms = models.IntegerField()
@@ -26,7 +27,6 @@ class Room(models.Model):
 
     def __str__(self):
         return self.room_name
-
 
 
 class Amenity(models.Model):
@@ -60,7 +60,7 @@ class HouseInfo(models.Model):
 
 
 class Booking(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE,related_name='booking_info')
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='booking_info')
     guest = models.ForeignKey(User, on_delete=models.CASCADE)
     num_guest = models.IntegerField()
     # 실제 머무른 기간
