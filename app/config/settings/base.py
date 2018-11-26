@@ -22,23 +22,23 @@ SECRET_KEY = secrets['SECRET_KEY']
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 MEDIA_URL = '/media/'
 
-
-AUTH_USER_MODEL = 'members.User'
-
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
+    'home',
+    'members',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'members',
-    'home',
-    'corsheaders',
-
 ]
+
+AUTH_USER_MODEL = 'members.User'
+
 
 # CORS settings: Frontend DNS 생성 시 추가필요
 CORS_ORIGIN_WHITELIST = (
