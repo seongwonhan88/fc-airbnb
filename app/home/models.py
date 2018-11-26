@@ -22,8 +22,6 @@ class Room(models.Model):
 
     # 확장되는 모델 필드들
     amenities = models.ManyToManyField('Amenity')
-    room_info = models.OneToOneField('RoomInfo', on_delete=models.CASCADE)
-    host_images = models.OneToOneField('HostImages', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.room_name
@@ -39,6 +37,7 @@ class Amenity(models.Model):
 
 
 class RoomInfo(models.Model):
+    room_info = models.OneToOneField(Room, on_delete=models.CASCADE, primary_key=True, )
     # 숙소하이라이트 부분
     room_info_1 = models.TextField()
     # 기본 설명
@@ -47,8 +46,6 @@ class RoomInfo(models.Model):
     room_info_3 = models.TextField()
     # 편의시설
     room_info_4 = models.TextField()
-    # 편의시설 모두 보기
-    room_info_5 = models.TextField()
     # 관련 사진들
     room_photo_1 = models.ImageField(upload_to='picture/host/listing/')
     room_photo_2 = models.ImageField(upload_to='picture/host/listing/')
@@ -69,6 +66,6 @@ class Booking(models.Model):
 
 
 class HostImages(models.Model):
-    # one-to-one 모델로 room과 연결
+    host_images = models.OneToOneField(Room, on_delete=models.CASCADE, primary_key=True)
     host_thumbnail_url = models.ImageField(upload_to='pictures/host/', blank=True, null=True)
     host_thumbnail_url_small = models.ImageField(upload_to='pictures/host/', blank=True, null=True)

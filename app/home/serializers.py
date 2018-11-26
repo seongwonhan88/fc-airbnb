@@ -7,7 +7,6 @@ class AmenitySerializer(serializers.ModelSerializer):
         model = Amenity
         fields = ('value',
                   'help_text',
-                  'key'
         )
 
 
@@ -38,9 +37,11 @@ class HostImageSerializer(serializers.ModelSerializer):
 
 
 class RoomSerializer(serializers.ModelSerializer):
-    host_images = HostImageSerializer()
-    room_info = RoomInfoSerializer()
+    hostimages = HostImageSerializer()
+    roominfo = RoomInfoSerializer()
     amenities = serializers.StringRelatedField(many=True, read_only=True)
+
+
     class Meta:
         model = Room
         fields = ('pk',
@@ -59,7 +60,10 @@ class RoomSerializer(serializers.ModelSerializer):
                   'created_at',
                   # 아래부터 외부모델 연결 필드 값
                   'amenities',
-                  'room_info',
-                  'host_images'
-                  # 'host_thumbnails',
+                  'roominfo',
+                  'hostimages'
                   )
+        read_only_fields = (
+            'roominfo',
+            'hostimages',
+        )
