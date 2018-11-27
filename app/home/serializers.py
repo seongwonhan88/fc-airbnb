@@ -18,7 +18,6 @@ class RoomInfoSerializer(serializers.ModelSerializer):
             'room_info_2',
             'room_info_3',
             'room_info_4',
-            'room_info_5',
             'room_photo_1',
             'room_photo_2',
             'room_photo_3',

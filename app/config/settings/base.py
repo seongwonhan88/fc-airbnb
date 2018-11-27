@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework.authtoken',
+    'django_extensions',
+    # 'debug_toolbar',
 ]
 
 AUTH_USER_MODEL = 'members.User'
@@ -55,7 +57,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+#debug-toolbar
+# INTERNAL_IPS = [
+#     '127.0.0.1', 'localhost',
+# ]
 
 ROOT_URLCONF = 'config.urls'
 

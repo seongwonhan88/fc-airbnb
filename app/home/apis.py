@@ -9,7 +9,7 @@ from .models import Room
 class RoomListingApiView(APIView):
 
     def get(self, request, format=None):
-        room = Room.objects.all()
+        room = Room.objects.all().prefetch_related('amenities').select_related('roominfo', 'hostimages')
         serializer = RoomSerializer(room, many=True)
         return Response(serializer.data)
 
@@ -24,7 +24,7 @@ class RoomListingApiView(APIView):
 class RoomDetailApiView(APIView):
 
     def get(self, request, pk, format=None):
-        room = Room.objects.get(pk=pk)
+        room = Room.objects.prefetch_related('amenities').select_related('roominfo', 'hostimages').get(pk=pk)
         serializer = RoomSerializer(room)
         return Response(serializer.data)
 
