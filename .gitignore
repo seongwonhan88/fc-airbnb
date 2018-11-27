@@ -4,6 +4,8 @@
 /.secrets
 /.static
 /.log
+/.ebextensions
+
 ### Django ###
 *.log
 *.pot
