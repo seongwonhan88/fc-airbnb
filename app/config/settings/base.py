@@ -25,10 +25,6 @@ MEDIA_URL = '/media/'
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheaders',
-    'home',
-    'members',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,8 +32,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework.authtoken',
-    # 'django_extensions',
-    'django_filters',
+    'django_extensions',
+
+    'corsheaders',
+    'home',
+    'members',
     # 'debug_toolbar',
 ]
 
@@ -106,8 +105,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # REST FRAMEWORK SETTINGS
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('members.permissions.BearerAuthentication',),
 }
+
 
 
 # Internationalization
