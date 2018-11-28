@@ -13,4 +13,5 @@ class UserSerializer(serializers.ModelSerializer):
             'img_profile',
             'id',
             'last_login',
+            'saved_room',
         )

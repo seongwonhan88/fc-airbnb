@@ -1,6 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import status
+from rest_framework import status, generics
+from django_filters import rest_framework as filters
+
 
 from .serializers import RoomSerializer
 from .models import Room
@@ -29,3 +31,25 @@ class RoomDetailApiView(APIView):
         return Response(serializer.data)
 
 
+class RoomApiView(generics.ListAPIView):
+    """
+    query필터 사용을 위해 djang-filter를 pip로 설치.
+    해당 뷰를 사용하면 url param값에 주는 조건대로 검색이 가능
+    """
+    queryset = Room.objects.all().prefetch_related('amenities').select_related('roominfo', 'hostimages')
+    serializer_class = RoomSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = (
+        'id',
+        'city',
+        'bathrooms',
+        'bedrooms',
+        'beds',
+        'person_capacity',
+        'room_name',
+        'room_type',
+        'room_and_property_type',
+        'public_address',
+        'price',
+        'amenities',
+    )
