@@ -22,15 +22,18 @@ class UserApiView(APIView):
         return Response(serializer.data)
 
 
-class FacebookAuthTokenView(APIView):
+class AuthTokenView(APIView):
 
     def post(self, request):
-        facebook_id = request.data.get('user_id')
+        user_id = request.data.get('user_id')
+        first_name = request.data.get('first_name')
+        last_name = request.data.get('last_name')
+        email = request.data.get('email')
 
-        if User.objects.filter(username=facebook_id).exists():
-            user = User.objects.get(username=facebook_id)
+        if User.objects.filter(username=user_id).exists():
+            user = User.objects.get(username=user_id)
         else:
-            user = User.objects.create_user(username=facebook_id)
+            user = User.objects.create_user(username=user_id, first_name=first_name, last_name=last_name, email=email)
         token = Token.objects.get_or_create(user=user)[0]
         data = {
             'token': token.key,
