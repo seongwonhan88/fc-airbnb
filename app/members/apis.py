@@ -67,9 +67,10 @@ class UserRoomSaveView(APIView):
         """
         user = User.objects.get(username=request.user)
         room = Room.objects.get(pk=request.data.get('room_id'))
-        if Room.objects.filter(saved_user=user).exists():
+        if room.saved_user.filter(username=user).exists():
             content = {'redundancy': 'already saved this room'}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         else:
             user.saved_room.add(room)
-        return Response(status=status.HTTP_201_CREATED)
+            content = {'message': 'successfully saved'}
+        return Response(content, status=status.HTTP_201_CREATED)
