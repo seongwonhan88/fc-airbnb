@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import status, generics
 from django_filters import rest_framework as filters
 
-
+from home.filters import RoomFilter
 from .serializers import RoomSerializer
 from .models import Room
 
@@ -39,17 +39,4 @@ class RoomApiView(generics.ListAPIView):
     queryset = Room.objects.all().prefetch_related('amenities').select_related('roominfo', 'hostimages')
     serializer_class = RoomSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = (
-        'id',
-        'city',
-        'bathrooms',
-        'bedrooms',
-        'beds',
-        'person_capacity',
-        'room_name',
-        'room_type',
-        'room_and_property_type',
-        'public_address',
-        'price',
-        'amenities',
-    )
+    filter_class = RoomFilter
