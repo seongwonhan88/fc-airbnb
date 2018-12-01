@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework import permissions, status
 from home.models import Room
 from home.serializers import RoomSerializer
-from .permissions import BearerAuthentication
+from .permissions import BearerAuthentication, IsOwner
 from .serializers import UserSerializer
 
 
@@ -44,7 +44,7 @@ class AuthTokenView(APIView):
 
 class UserSavedView(APIView):
     authentication_classes = (BearerAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsOwner)
 
     def get(self, request):
         """
