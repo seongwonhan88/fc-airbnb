@@ -7,7 +7,7 @@ class AmenitySerializer(serializers.ModelSerializer):
         model = Amenity
         fields = ('value',
                   'help_text',
-        )
+                  )
 
 
 class RoomInfoSerializer(serializers.ModelSerializer):
@@ -39,7 +39,6 @@ class RoomSerializer(serializers.ModelSerializer):
     hostimages = HostImageSerializer()
     roominfo = RoomInfoSerializer()
     amenities = serializers.StringRelatedField(many=True, read_only=True)
-
 
     class Meta:
         model = Room

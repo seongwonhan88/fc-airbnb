@@ -52,8 +52,8 @@ class UserSavedView(APIView):
         :param request:
         :return:
         """
-        room = Room.objects.prefetch_related('saved_user').get(saved_user=request.user)
-        serializer = RoomSerializer(room)
+        room = Room.objects.prefetch_related('saved_user').filter(saved_user=request.user)
+        serializer = RoomSerializer(room, many=True)
         return Response(serializer.data)
 
 
@@ -65,7 +65,7 @@ class UserRoomSaveView(APIView):
         """
         Token을 소유한 사용자가 해당 방의 pk를 전달하면 사용자의 'saved'목록에 추가
         이미 추가된 방이면 400 bad request를 돌려주면서 메지시 전달
-        :param request: room_id 값을 param으로 저달
+        :param request: room_id 값을 param으로 전달
         :return:
         """
         user = User.objects.get(username=request.user)
@@ -77,3 +77,19 @@ class UserRoomSaveView(APIView):
             user.saved_room.add(room)
             content = {'message': 'successfully saved'}
         return Response(content, status=status.HTTP_201_CREATED)
+
+    def delete(self, request):
+        """
+        Token 소유자가 이미 'saved'처리 된 방을 목록에서 제거하고 싶을 때 요청
+        :param request: room_id 값을 param으로 전달
+        :return: room_id에 해당하는 내용 제거
+        """
+        user = User.objects.get(username=request.user)
+        room = Room.objects.get(pk=request.data.get('room_id'))
+        if room.saved_user.filter(username=user).exists():
+            user.saved_room.remove(room)
+            content = {'message': 'successfully removed'}
+            return Response(content, status=status.HTTP_200_OK)
+        else:
+            content = {'message': 'room is already removed'}
+        return Response(content, status=status.HTTP_400_BAD_REQUEST)

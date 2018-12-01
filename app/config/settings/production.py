@@ -14,6 +14,7 @@ ALLOWED_HOSTS = [
     "www.backends.xyz",
     "api.backends.xyz",
     ".elasticbeanstalk.com",
+    ".amazonaws.com",
 ]
 
 # DATABASE
