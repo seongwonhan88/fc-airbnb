@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
+
 
 User = get_user_model()
 
@@ -22,6 +24,7 @@ class Room(models.Model):
 
     # 확장되는 모델 필드들
     amenities = models.ManyToManyField('Amenity')
+    bookings = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Booking')
 
     def __str__(self):
         return self.room_name
@@ -62,7 +65,12 @@ class Booking(models.Model):
     check_in_date = models.DateField()
     check_out_date = models.DateField()
     # 예약을 신청한 기간
-    reserved_date = models.DateTimeField(auto_now_add=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+
+class BookingDate(models.Model):
+    booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='reserved_dates')
+    reserved_date = models.DateField()
 
 
 class HostImages(models.Model):

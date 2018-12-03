@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework.authtoken',
     # 'django_extensions',
-
+    'rest_framework',
     'corsheaders',
     'home',
     'members',
@@ -106,7 +106,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # REST FRAMEWORK SETTINGS
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
-    'DEFAULT_AUTHENTICATION_CLASSES': ('members.permissions.BearerAuthentication',),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'members.permissions.BearerAuthentication',),
 }
 
 
