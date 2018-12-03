@@ -1,4 +1,4 @@
-from rest_framework import authentication
+from rest_framework import authentication, permissions
 
 
 class BearerAuthentication(authentication.TokenAuthentication):
@@ -7,3 +7,11 @@ class BearerAuthentication(authentication.TokenAuthentication):
     TokenAuth를 상속받으면서 keyword 값만 Bearer로 변경
     """
     keyword = 'Bearer'
+
+
+class IsOwner(permissions.BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.owner == request.user

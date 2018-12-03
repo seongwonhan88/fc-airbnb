@@ -32,13 +32,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework.authtoken',
-    # 'django_extensions',
     'rest_framework',
     'corsheaders',
     'home',
     'members',
-    # 'debug_toolbar',
-]
+    ]
 
 AUTH_USER_MODEL = 'members.User'
 
