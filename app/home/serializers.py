@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Room, Amenity, RoomInfo, HostImages
+from .models import Room, Amenity, RoomInfo, HostImages, Booking, BookingDate
 
 
 class AmenitySerializer(serializers.ModelSerializer):
@@ -35,10 +35,37 @@ class HostImageSerializer(serializers.ModelSerializer):
         )
 
 
+class BookingDateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BookingDate
+        fields = (
+            'reserved_date',
+        )
+
+
+class BookingSerializer(serializers.ModelSerializer):
+    reserved_dates = BookingDateSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Booking
+        fields = (
+            'id',
+            'room',
+            'guest',
+            'num_guest',
+            'check_in_date',
+            'check_out_date',
+            'reserved_dates',
+        )
+
+
 class RoomSerializer(serializers.ModelSerializer):
     hostimages = HostImageSerializer()
     roominfo = RoomInfoSerializer()
     amenities = serializers.StringRelatedField(many=True, read_only=True)
+    booking_info = BookingSerializer(many=True)
+
 
     class Meta:
         model = Room
@@ -59,9 +86,11 @@ class RoomSerializer(serializers.ModelSerializer):
                   # 아래부터 외부모델 연결 필드 값
                   'amenities',
                   'roominfo',
-                  'hostimages'
+                  'hostimages',
+                  'booking_info',
                   )
         read_only_fields = (
             'roominfo',
             'hostimages',
+            'booking_info',
         )
