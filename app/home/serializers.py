@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Room, Amenity, RoomInfo, HostImages, Booking, BookingDate
+
+from .models import Room, Amenity, RoomInfo, HostImages, Booking, BookingDates
 
 
 class AmenitySerializer(serializers.ModelSerializer):
@@ -35,17 +36,17 @@ class HostImageSerializer(serializers.ModelSerializer):
         )
 
 
-class BookingDateSerializer(serializers.ModelSerializer):
+class BookingDatesSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = BookingDate
+        model = BookingDates
         fields = (
             'reserved_date',
         )
 
 
 class BookingSerializer(serializers.ModelSerializer):
-    reserved_dates = BookingDateSerializer(many=True, read_only=True)
+    reserved_dates = BookingDatesSerializer(many=True, read_only=True)
 
     class Meta:
         model = Booking

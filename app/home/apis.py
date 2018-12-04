@@ -1,36 +1,24 @@
 import datetime
 
+from django_filters import rest_framework as filters
+from rest_framework import status, generics, permissions
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import status, generics, permissions
-from django_filters import rest_framework as filters
 
-from members.permissions import BearerAuthentication
-from .serializers import RoomSerializer, BookingSerializer, BookingDateSerializer
-from .models import Room, BookingDate, Booking
-from home.filters import RoomFilter
-
-
-class RoomListingApiView(APIView):
-
-    def get(self, request, format=None):
-        room = Room.objects.all().prefetch_related('amenities').select_related('roominfo', 'hostimages')
-        serializer = RoomSerializer(room, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = RoomSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+from members.permissions import BearerAuthentication, IsOwner
+from .filters import RoomFilter
+from .models import Room, BookingDates, Booking
+from .serializers import RoomSerializer, BookingSerializer, BookingDatesSerializer
 
 
 class RoomDetailApiView(APIView):
-
+    """
+    기본 페이지 구성을 위해 get 요청 시 전체 숙소 목록을 return
+    """
     def get(self, request, pk, format=None):
-        room = Room.objects.prefetch_related('amenities', 'booking_info').select_related('roominfo', 'hostimages').get(pk=pk)
+        room = Room.objects.prefetch_related('amenities', 'booking_info').select_related('roominfo', 'hostimages').get(
+            pk=pk)
         serializer = RoomSerializer(room)
         return Response(serializer.data)
 
@@ -39,6 +27,7 @@ class RoomApiView(generics.ListAPIView):
     """
     query필터 사용을 위해 djang-filter를 pip로 설치.
     해당 뷰를 사용하면 url param값에 주는 조건대로 검색이 가능
+    filter_class 에는 customize 한 필터들을 적용
     """
     queryset = Room.objects.all().prefetch_related('amenities').select_related('roominfo', 'hostimages')
     serializer_class = RoomSerializer
@@ -47,12 +36,11 @@ class RoomApiView(generics.ListAPIView):
 
 
 class BookingAPIView(APIView):
-    authentication_classes = (
-        BearerAuthentication,
-    )
-    permission_classes = (
-        permissions.IsAuthenticated,
-    )
+    """
+    예약 APIView, get 요청 시 user_id를 받아서
+    """
+    authentication_classes = (BearerAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, format=None):
         user = request.auth.user_id
@@ -62,7 +50,7 @@ class BookingAPIView(APIView):
 
     def post(self, request, format=None):
         user = request.auth.user_id
-        serializer = BookingSerializer(data={**request.data, 'guest': user},)
+        serializer = BookingSerializer(data={**request.data, 'guest': user}, )
         if serializer.is_valid():
             serializer.save()
 
@@ -79,6 +67,14 @@ class BookingAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class BookingCancelAPIView(APIView):
+    """
+    예약을 생성한 사용자일 경우에만 취소 가능한 APIView
+    """
+    authentication_classes = (BearerAuthentication,)
+    permission_classes = (IsOwner,)
+
     def delete(self, request):
         booking = get_object_or_404(Booking, id=request.data.get('booking_id'), guest=request.user)
         booking.delete()
@@ -88,15 +84,11 @@ class BookingAPIView(APIView):
         return Response(content, status=status.HTTP_204_NO_CONTENT)
 
 
-class BookingDateAPIView(APIView):
-    authentication_classes = (
-        BearerAuthentication,
-    )
-    permission_classes = (
-        permissions.IsAuthenticated,
-    )
+class BookingDatesAPIView(APIView):
+    authentication_classes = (BearerAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
 
-    def get(self, request, pk,format=None):
-        bookingdate = BookingDate.objects.filter(booking__id=pk)
-        serializer = BookingDateSerializer(bookingdate, many=True)
+    def get(self, request, pk, format=None):
+        booking_dates = BookingDates.objects.filter(booking__id=pk)
+        serializer = BookingDatesSerializer(booking_dates, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

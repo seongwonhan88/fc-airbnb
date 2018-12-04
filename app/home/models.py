@@ -68,7 +68,7 @@ class Booking(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
 
-class BookingDate(models.Model):
+class BookingDates(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='reserved_dates')
     reserved_date = models.DateField()
 
