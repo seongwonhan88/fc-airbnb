@@ -7,7 +7,7 @@ from rest_framework import status, generics, permissions
 from django_filters import rest_framework as filters
 
 from members.permissions import BearerAuthentication
-from .serializers import RoomSerializer, BookingSerializer, BookingDateSerializer
+from .serializers import RoomSerializer, BookingSerializer
 from .models import Room, BookingDate, Booking
 from home.filters import RoomFilter
 

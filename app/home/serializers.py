@@ -1,6 +1,6 @@
 import datetime
 
-from django.utils.timezone import now
+from django.conf import settings
 from rest_framework import serializers
 from .models import Room, Amenity, RoomInfo, HostImages, Booking, BookingDate
 
@@ -37,18 +37,12 @@ class HostImageSerializer(serializers.ModelSerializer):
             'host_thumbnail_url_small',
         )
 
-
-class BookingDateSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = BookingDate
-        fields = (
-            'reserved_date',
-        )
-
+class BookingDateRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.reserved_date
 
 class BookingSerializer(serializers.ModelSerializer):
-    reserved_dates = BookingDateSerializer(many=True, read_only=True)
+    reserved_dates = BookingDateRelatedField(read_only=True, many=True)
 
     class Meta:
         model = Booking
@@ -71,7 +65,6 @@ class BookingSerializer(serializers.ModelSerializer):
 
         # 비교 대상
         room = Room.objects.get(room_name=data['room'])
-        room_id = room.id
         room_capacity = room.person_capacity
 
         if chi < now:
