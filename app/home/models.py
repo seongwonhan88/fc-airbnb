@@ -77,3 +77,4 @@ class HostImages(models.Model):
     host_images = models.OneToOneField(Room, on_delete=models.CASCADE, primary_key=True)
     host_thumbnail_url = models.ImageField(upload_to='pictures/host/', blank=True, null=True)
     host_thumbnail_url_small = models.ImageField(upload_to='pictures/host/', blank=True, null=True)
+
