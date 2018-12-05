@@ -92,3 +92,4 @@ class BookingDatesAPIView(APIView):
         booking_dates = BookingDates.objects.filter(booking__id=pk)
         serializer = BookingDatesSerializer(booking_dates, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
