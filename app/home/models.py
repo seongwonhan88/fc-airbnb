@@ -1,8 +1,7 @@
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from members.models import NormalUser
+from members.models import NormalUser, HostUser
 
 User = get_user_model()
 
@@ -29,6 +28,7 @@ class Room(models.Model):
     # 확장되는 모델 필드들
     amenities = models.ManyToManyField('Amenity')
     bookings = models.ManyToManyField(NormalUser, through='Booking')
+    room_host = models.ForeignKey(HostUser, on_delete=models.CASCADE, related_name='listed_room')
 
     def __str__(self):
         return self.room_name
