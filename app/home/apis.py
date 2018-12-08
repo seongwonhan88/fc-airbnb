@@ -122,7 +122,7 @@ class ReviewAPIView(APIView):
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
         IsOwner,
-    )록
+    )
 
     def post(self, request, room_id):
         user = request.auth.user_id
