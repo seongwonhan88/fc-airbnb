@@ -14,9 +14,9 @@ class HostUserManager(UserManager):
 
 class User(AbstractUser):
     #매니저 설정
-    objects = models.Manager
-    user_objects = NormalUserManager
-    host_objects = HostUserManager
+    objects = models.Manager()
+    user_objects = NormalUserManager()
+    host_objects = HostUserManager()
 
     #공통 필드
     img_profile = models.ImageField(upload_to='user', blank=True)
@@ -27,6 +27,17 @@ class User(AbstractUser):
 
     # HOST 관련 필드
     is_host = models.BooleanField(default=False)
-    rating = models.PositiveIntegerField(default=4)
     listings = models.ManyToManyField('home.Room', related_name='hosting')
     host_introduction = models.TextField(blank=True, null=True)
+
+
+class NormalUser(User):
+    class Meta:
+        proxy = True
+
+
+class HostUser(User):
+    class Meta:
+        proxy = True
+
+

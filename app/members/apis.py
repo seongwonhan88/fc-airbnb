@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework import permissions, status
 from home.models import Room
 from home.serializers import RoomSerializer
+from .models import NormalUser
 from .permissions import BearerAuthentication, IsOwner
 from .serializers import UserSerializer
 
@@ -17,7 +18,7 @@ class UserApiView(APIView):
     # permission_classes = (permissions.IsAuthenticated,)
     # authentication_classes = (BearerAuthentication,)
     def get(self, request, pk):
-        user = User.objects.get(pk=pk)
+        user = NormalUser.user_objects.get(pk=pk)
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
@@ -30,16 +31,16 @@ class AuthTokenView(APIView):
         last_name = request.data.get('last_name')
         email = request.data.get('email')
 
-        if User.objects.filter(username=user_id).exists():
-            user = User.objects.get(username=user_id)
+        if NormalUser.user_objects.filter(username=user_id).exists():
+            user = NormalUser.user_objects.get(username=user_id)
         else:
-            user = User.objects.create_user(username=user_id, first_name=first_name, last_name=last_name, email=email)
+            user = NormalUser.user_objects.create_user(username=user_id, first_name=first_name, last_name=last_name, email=email)
         token = Token.objects.get_or_create(user=user)[0]
         data = {
             'token': token.key,
             'user': UserSerializer(user).data
         }
-        return Response(data)
+        return Response(data, status=status.HTTP_201_CREATED)
 
 
 class UserSavedView(APIView):
@@ -68,7 +69,7 @@ class UserRoomSaveView(APIView):
         :param request: room_id 값을 param으로 전달
         :return:
         """
-        user = User.objects.get(username=request.user)
+        user = NormalUser.user_objects.get(username=request.user)
         room = Room.objects.get(pk=request.data.get('room_id'))
         if room.saved_user.filter(username=user).exists():
             content = {'redundancy': 'already saved this room'}
@@ -84,7 +85,7 @@ class UserRoomSaveView(APIView):
         :param request: room_id 값을 param으로 전달
         :return: room_id에 해당하는 내용 제거
         """
-        user = User.objects.get(username=request.user)
+        user = NormalUser.user_objects.get(username=request.user)
         room = Room.objects.get(pk=request.data.get('room_id'))
         if room.saved_user.filter(username=user).exists():
             user.saved_room.remove(room)
