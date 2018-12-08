@@ -2,7 +2,7 @@ from .base import *
 
 DEBUG = True
 
-#ALLOWED_HOSTS
+# ALLOWED_HOSTS
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost',]
 
 # SECRETS
@@ -24,6 +24,6 @@ DATABASES = {
 # AWS_STORAGE_BUCKET_NAME = secrets['AWS_STORAGE_BUCKET_NAME']
 # AWS_S3_SIGNATURE_VERSION = 's3v4'
 # AWS_S3_REGION_NAME = 'ap-northeast-2'
-2# DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
+# DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
 
 # STATICFILES_STORAGE = 'config.storages.StaticStorage'

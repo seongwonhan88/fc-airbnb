@@ -1,8 +1,5 @@
 import datetime
-
-from django.conf import settings
 from rest_framework import serializers
-
 from .models import Room, Amenity, HostImages, Booking, Review
 
 
@@ -29,7 +26,7 @@ class BookingDateRelatedField(serializers.RelatedField):
 
 
 class BookingSerializer(serializers.ModelSerializer):
-    reserved_dates = BookingDateRelatedField(read_only=True, many=True)
+    reserved_dates = BookingDatesSerializer(many=True, read_only=True)
 
     class Meta:
         model = Booking

@@ -25,13 +25,13 @@ class RoomListingApiView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 class RoomDetailApiView(APIView):
     """
     기본 페이지 구성을 위해 get 요청 시 전체 숙소 목록을 return
     """
     def get(self, request, pk, format=None):
-        room = Room.objects.prefetch_related('amenities', 'booking_info').select_related('hostimages').get(
-            pk=pk)
+        room = Room.objects.prefetch_related('amenities', 'booking_info').select_related('hostimages').get(pk=pk)
         serializer = RoomSerializer(room)
         return Response(serializer.data)
 
@@ -97,6 +97,7 @@ class BookingCancelAPIView(APIView):
         return Response(context, status=status.HTTP_204_NO_CONTENT)
 
 
+
 class ReviewListAPIView(APIView):
     authentication_classes = (BearerAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
@@ -122,6 +123,7 @@ class ReviewAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def delete(self, request, room_id):
         pk = request.data.get('pk')
