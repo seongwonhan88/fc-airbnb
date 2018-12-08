@@ -124,12 +124,11 @@ class ReviewAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     def delete(self, request, room_id):
-        pk = request.data.get('pk')
-        if not pk:
+        # pk = request.data.get('pk')
+        if not room_id:
             raise serializers.ValidationError({"detail": "pk가 전송되지 않았습니다."})
-        review = get_object_or_404(Review, pk=pk)
+        review = get_object_or_404(Review, pk=room_id)
         review.delete()
         context = {
             "message": "후기를 삭제했습니다."
