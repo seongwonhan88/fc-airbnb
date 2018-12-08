@@ -1,10 +1,10 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Amenity, Room, RoomInfo, HostImages, Booking
+from .models import Amenity, Room, HostImages, Booking, Review
 
 admin.site.register(Room)
 admin.site.register(Amenity)
-admin.site.register(RoomInfo)
 admin.site.register(HostImages)
 admin.site.register(Booking)
+admin.site.register(Review)

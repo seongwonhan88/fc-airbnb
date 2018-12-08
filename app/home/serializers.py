@@ -1,9 +1,6 @@
 import datetime
-
-from django.utils.timezone import now
 from rest_framework import serializers
-
-from .models import Room, Amenity, RoomInfo, HostImages, Booking, BookingDates
+from .models import Room, Amenity, HostImages, Booking, Review
 
 
 class AmenitySerializer(serializers.ModelSerializer):
@@ -12,22 +9,6 @@ class AmenitySerializer(serializers.ModelSerializer):
         fields = ('value',
                   'help_text',
                   )
-
-
-class RoomInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RoomInfo
-        fields = (
-            'room_info_1',
-            'room_info_2',
-            'room_info_3',
-            'room_info_4',
-            'room_photo_1',
-            'room_photo_2',
-            'room_photo_3',
-            'room_photo_4',
-            'room_photo_5',
-        )
 
 
 class HostImageSerializer(serializers.ModelSerializer):
@@ -39,13 +20,9 @@ class HostImageSerializer(serializers.ModelSerializer):
         )
 
 
-class BookingDatesSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = BookingDates
-        fields = (
-            'reserved_date',
-        )
+class BookingDateRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.reserved_date
 
 
 class BookingSerializer(serializers.ModelSerializer):
@@ -72,7 +49,6 @@ class BookingSerializer(serializers.ModelSerializer):
 
         # 비교 대상
         room = Room.objects.get(room_name=data['room'])
-        room_id = room.id
         room_capacity = room.person_capacity
 
         if chi < now:
@@ -92,9 +68,11 @@ class BookingSerializer(serializers.ModelSerializer):
 
 class RoomSerializer(serializers.ModelSerializer):
     hostimages = HostImageSerializer()
-    roominfo = RoomInfoSerializer()
     amenities = serializers.StringRelatedField(many=True, read_only=True)
-    booking_info = BookingSerializer(many=True)
+    room_photo = serializers.SerializerMethodField()
+
+    def get_room_photo(self, obj):
+        return obj.room_photos.values_list('room_photo', flat=True)
 
     class Meta:
         model = Room
@@ -111,15 +89,28 @@ class RoomSerializer(serializers.ModelSerializer):
                   'price',
                   'lat',
                   'lng',
+                  'room_info_1',
+                  'room_info_2',
+                  'room_info_3',
+                  'room_info_4',
                   'created_at',
                   # 아래부터 외부모델 연결 필드 값
                   'amenities',
-                  'roominfo',
                   'hostimages',
-                  'booking_info',
+                  'room_photo',
                   )
         read_only_fields = (
-            'roominfo',
             'hostimages',
             'booking_info',
+        )
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = (
+            'room',
+            'guest',
+            'comment',
+            'created_at',
         )
