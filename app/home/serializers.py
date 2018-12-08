@@ -114,3 +114,11 @@ class ReviewSerializer(serializers.ModelSerializer):
             'comment',
             'created_at',
         )
+
+
+class RoomCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = (
+
+        )
