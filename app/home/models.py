@@ -21,7 +21,10 @@ class Room(models.Model):
     lat = models.FloatField()
     lng = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
-
+    room_info_1 = models.TextField()
+    room_info_2 = models.TextField()
+    room_info_3 = models.TextField()
+    room_info_4 = models.TextField()
     # 확장되는 모델 필드들
     amenities = models.ManyToManyField('Amenity')
     bookings = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Booking')
@@ -39,22 +42,9 @@ class Amenity(models.Model):
         return self.key
 
 
-class RoomInfo(models.Model):
-    room_info = models.OneToOneField(Room, on_delete=models.CASCADE, primary_key=True, )
-    # 숙소하이라이트 부분
-    room_info_1 = models.TextField()
-    # 기본 설명
-    room_info_2 = models.TextField()
-    # 자세히 알아보기 추가 내용
-    room_info_3 = models.TextField()
-    # 편의시설
-    room_info_4 = models.TextField()
-    # 관련 사진들
-    room_photo_1 = models.ImageField(upload_to='picture/host/listing/')
-    room_photo_2 = models.ImageField(upload_to='picture/host/listing/')
-    room_photo_3 = models.ImageField(upload_to='picture/host/listing/')
-    room_photo_4 = models.ImageField(upload_to='picture/host/listing/')
-    room_photo_5 = models.ImageField(upload_to='picture/host/listing/')
+class RoomPhoto(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='room_photos')
+    room_photo = models.ImageField(upload_to='picture/host/listing/')
 
 
 class Booking(models.Model):
@@ -68,7 +58,7 @@ class Booking(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
 
-class BookingDate(models.Model):
+class BookingDates(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='reserved_dates')
     reserved_date = models.DateField()
 
@@ -78,3 +68,10 @@ class HostImages(models.Model):
     host_thumbnail_url = models.ImageField(upload_to='pictures/host/', blank=True, null=True)
     host_thumbnail_url_small = models.ImageField(upload_to='pictures/host/', blank=True, null=True)
 
+
+class Review(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    guest = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.TextField()
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
