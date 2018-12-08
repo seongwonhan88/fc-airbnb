@@ -26,7 +26,7 @@ class BookingDateRelatedField(serializers.RelatedField):
 
 
 class BookingSerializer(serializers.ModelSerializer):
-    reserved_dates = BookingDatesSerializer(many=True, read_only=True)
+    reserved_dates = BookingDateRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Booking
