@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'home',
     'members',
-    'django_extensions',
     ]
 
 AUTH_USER_MODEL = 'members.User'
