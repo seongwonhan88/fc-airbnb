@@ -1,8 +1,9 @@
 from django.urls import path
 from .apis import RoomDetailApiView, RoomApiView, BookingAPIView, BookingCancelAPIView, ReviewAPIView, \
-    UserReviewListAPIView, RoomReviewListAPIView, AmenityAPIView
+    UserReviewListAPIView, RoomReviewListAPIView, AmenityAPIView, RoomListingApiView
 
 urlpatterns = [
+    path('room_listings/', RoomListingApiView.as_view(), name='listing'),
     path('listings/<int:pk>/', RoomDetailApiView.as_view(), name='room-detail'),
     path('listings/', RoomApiView.as_view(), name='room-list-generic'),
     path('booking/', BookingAPIView.as_view(), name='booking'),

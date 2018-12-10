@@ -18,7 +18,7 @@ class AmenityAPIView(generics.ListAPIView):
 class RoomListingApiView(APIView):
 
     def get(self, request, format=None):
-        room = Room.objects.all().prefetch_related('amenities').select_related('hostimages')
+        room = Room.objects.all().prefetch_related('amenities', 'room_photos').select_related('hostimages')
         serializer = RoomSerializer(room, many=True)
         return Response(serializer.data)
 
@@ -46,7 +46,7 @@ class RoomApiView(generics.ListAPIView):
     해당 뷰를 사용하면 url param값에 주는 조건대로 검색이 가능
     filter_class 에는 customize 한 필터들을 적용
     """
-    queryset = Room.objects.all().prefetch_related('amenities').select_related('hostimages')
+    queryset = Room.objects.all().prefetch_related('amenities', 'room_photos').select_related('hostimages')
     serializer_class = RoomSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filter_class = RoomFilter
