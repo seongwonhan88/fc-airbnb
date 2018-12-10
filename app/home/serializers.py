@@ -1,14 +1,12 @@
 import datetime
 from rest_framework import serializers
-from .models import Room, Amenity, HostImages, Booking, Review
+from .models import Room, Amenity, HostImages, Booking, Review, RoomPhoto
 
 
 class AmenitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Amenity
-        fields = ('value',
-                  'help_text',
-                  )
+        fields = ('pk', 'value', 'help_text',)
 
 
 class HostImageSerializer(serializers.ModelSerializer):
@@ -66,13 +64,21 @@ class BookingSerializer(serializers.ModelSerializer):
         return data
 
 
+class RoomPhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoomPhoto
+        fields = (
+            'room_photo',
+        )
+
+
 class RoomSerializer(serializers.ModelSerializer):
     hostimages = HostImageSerializer()
     amenities = serializers.StringRelatedField(many=True, read_only=True)
-    room_photo = serializers.SerializerMethodField()
+    room_photos = RoomPhotoSerializer(many=True, read_only=True)
 
     def get_room_photo(self, obj):
-        return obj.room_photos.values_list('room_photo', flat=True)
+        return obj.room_photos.values_list('room_photos', flat=True)
 
     class Meta:
         model = Room
@@ -97,7 +103,7 @@ class RoomSerializer(serializers.ModelSerializer):
                   # 아래부터 외부모델 연결 필드 값
                   'amenities',
                   'hostimages',
-                  'room_photo',
+                  'room_photos',
                   )
         read_only_fields = (
             'hostimages',

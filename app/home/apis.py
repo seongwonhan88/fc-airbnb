@@ -6,8 +6,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from members.permissions import BearerAuthentication, IsOwner
 from .filters import RoomFilter
-from .models import Room, Booking, Review
-from .serializers import RoomSerializer, BookingSerializer, ReviewSerializer
+from .models import Room, Booking, Review, Amenity
+from .serializers import RoomSerializer, BookingSerializer, ReviewSerializer, AmenitySerializer
+
+
+class AmenityAPIView(generics.ListAPIView):
+    queryset = Amenity.objects.all()
+    serializer_class = AmenitySerializer
 
 
 class RoomListingApiView(APIView):
@@ -23,7 +28,6 @@ class RoomListingApiView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class RoomDetailApiView(APIView):
