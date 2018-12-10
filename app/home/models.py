@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+
 from members.models import NormalUser, HostUser
 
 User = get_user_model()
