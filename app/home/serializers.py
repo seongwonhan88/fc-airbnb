@@ -1,6 +1,12 @@
 import datetime
+
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
+
+from members.models import HostUser
 from .models import Room, Amenity, HostImages, Booking, Review, RoomPhoto
+
+User = get_user_model()
 
 
 class AmenitySerializer(serializers.ModelSerializer):
@@ -72,11 +78,19 @@ class RoomPhotoSerializer(serializers.ModelSerializer):
         )
 
 
+class RoomHostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HostUser
+        fields = (
+            'pk', 'first_name', 'last_name', 'is_host', 'host_introduction', 'img_profile'
+        )
+
+
 class RoomSerializer(serializers.ModelSerializer):
-    hostimages = HostImageSerializer()
+    hostimages = HostImageSerializer(read_only=True)
     amenities = serializers.StringRelatedField(many=True, read_only=True)
     room_photos = RoomPhotoSerializer(many=True, read_only=True)
-
+    room_host = RoomHostSerializer(read_only=True)
     def get_room_photo(self, obj):
         return obj.room_photos.values_list('room_photos', flat=True)
 
@@ -104,6 +118,7 @@ class RoomSerializer(serializers.ModelSerializer):
                   'amenities',
                   'hostimages',
                   'room_photos',
+                  'room_host'
                   )
         read_only_fields = (
             'hostimages',
@@ -128,13 +143,32 @@ class RoomCreateSerializer(serializers.ModelSerializer):
         fields = (
             'bathrooms', 'bedrooms', 'beds', 'room_name', 'room_type', 'room_and_property_type', 'public_address',
             'city', 'price', 'lat', 'lng', 'room_info_1', 'room_info_2', 'room_info_3', 'room_info_4',
-            'amenities',
+            'person_capacity',
+            'amenities', 'room_photos',
         )
 
     def create(self, validated_data):
         request = self.context.get('request')
         validated_data['room_host'] = request.user
         room = super().create(validated_data)
-        request.user.is_host=True
+        request.user.is_host = True
+        request.user.save()
         room.save()
+
+        images = request.data.getlist('room_photo')
+        amenities = request.data.getlist('amenities')
+
+        num = 1
+
+        if amenities:
+            for amenity in amenities:
+                amenity = int(amenity)
+                room.amenities.add(amenity)
+
+        if images:
+            for image in images:
+                room_photo = RoomPhoto.objects.create(room=room)
+                room_photo.room_photo.save(f'room_{room.pk}_image_{num}', image)
+                num += 1
+
         return room

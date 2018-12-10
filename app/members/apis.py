@@ -3,8 +3,9 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import permissions, status, generics
-from home.models import Room
-from home.serializers import RoomSerializer, RoomCreateSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
+from home.models import Room, RoomPhoto
+from home.serializers import RoomSerializer, RoomCreateSerializer, RoomPhotoSerializer
 from .models import NormalUser
 from .permissions import BearerAuthentication, IsOwner
 from .serializers import UserSerializer
@@ -101,3 +102,25 @@ class RoomCreateAPIView(generics.CreateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = RoomCreateSerializer
 
+
+class RoomPhotoUploadAPIView(APIView):
+    authentication_classes = (BearerAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    parser_classes = (MultiPartParser, FormParser,)
+
+    def post(self, request):
+        room = Room.objects.filter(room_host=request.user).last()
+        images = request.data.getlist('room_photo')
+        if images:
+            for image in images:
+                RoomPhoto.objects.create(room=room, room_photo=image)
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class RoomPhotoSerializerUploadAPIView(generics.CreateAPIView):
+    authentication_classes = (BearerAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    parser_classes = (MultiPartParser, FormParser,)
+    queryset = RoomPhoto.objects.all()
+    serializer_class = RoomPhotoSerializer

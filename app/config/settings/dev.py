@@ -18,6 +18,20 @@ DATABASES = secrets['DATABASES']
 # }
 
 
+INSTALLED_APPS += [
+    'django_extensions',
+    # 'debug_toolbar',
+]
+
+# MIDDLEWARE += [
+#     'debug_toolbar.middleware.DebugToolbarMiddleware',
+# ]
+
+# debug-toolbar
+# INTERNAL_IPS = [
+#     '127.0.0.1', 'localhost',
+# ]
+
 # STORAGE
 AWS_ACCESS_KEY_ID = secrets['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = secrets['AWS_SECRET_ACCESS_KEY']
