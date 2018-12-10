@@ -132,7 +132,7 @@ class RoomCreateSerializer(serializers.ModelSerializer):
         fields = (
             'bathrooms', 'bedrooms', 'beds', 'room_name', 'room_type', 'room_and_property_type', 'public_address',
             'city', 'price', 'lat', 'lng', 'room_info_1', 'room_info_2', 'room_info_3', 'room_info_4', 'person_capacity',
-            'amenities',
+            'amenities', 'room_photos',
         )
 
     def create(self, validated_data):
@@ -142,5 +142,15 @@ class RoomCreateSerializer(serializers.ModelSerializer):
         request.user.is_host = True
         request.user.save()
         room.save()
+
+        images = request.data.getlist('room_photo')
+        num = 1
+
+        if images:
+            for image in images:
+                room_photo = RoomPhoto.objects.create(room=room)
+                room_photo.room_photo.save(f'room_{room.pk}_image_{num}', image)
+                num += 1
+
         return room
 

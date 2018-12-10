@@ -118,4 +118,10 @@ class RoomPhotoUploadAPIView(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+class RoomPhotoSerializerUploadAPIView(generics.CreateAPIView):
+    authentication_classes = (BearerAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    parser_classes = (MultiPartParser, FormParser,)
+    queryset = RoomPhoto.objects.all()
+    serializer_class = RoomPhotoSerializer
 
