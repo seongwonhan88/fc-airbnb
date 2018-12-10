@@ -2,9 +2,9 @@ from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import permissions, status
+from rest_framework import permissions, status, generics
 from home.models import Room
-from home.serializers import RoomSerializer
+from home.serializers import RoomSerializer, RoomCreateSerializer
 from .models import NormalUser
 from .permissions import BearerAuthentication, IsOwner
 from .serializers import UserSerializer
@@ -94,3 +94,10 @@ class UserRoomSaveView(APIView):
         else:
             content = {'message': 'room is already removed'}
         return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RoomCreateAPIView(generics.CreateAPIView):
+    queryset = Room.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = RoomCreateSerializer
+

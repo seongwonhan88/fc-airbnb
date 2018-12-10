@@ -120,5 +120,15 @@ class RoomCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = (
-
+            'bathrooms', 'bedrooms', 'beds', 'room_name', 'room_type', 'room_and_property_type', 'public_address',
+            'city', 'price', 'lat', 'lng', 'room_info_1', 'room_info_2', 'room_info_3', 'room_info_4',
+            'amenities',
         )
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        validated_data['room_host'] = request.user
+        room = super().create(validated_data)
+        request.user.is_host=True
+        room.save()
+        return room
