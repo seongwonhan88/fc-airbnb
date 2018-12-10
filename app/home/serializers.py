@@ -144,7 +144,14 @@ class RoomCreateSerializer(serializers.ModelSerializer):
         room.save()
 
         images = request.data.getlist('room_photo')
+        amenities = request.data.getlist('amenities')
+
         num = 1
+
+        if amenities:
+            for amenity in amenities:
+                amenity = int(amenity)
+                room.amenities.add(amenity)
 
         if images:
             for image in images:
