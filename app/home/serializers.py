@@ -3,7 +3,6 @@ import datetime
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from members.models import NormalUser
 from .models import Room, Amenity, HostImages, Booking, Review, RoomPhoto
 
 User = get_user_model()
@@ -144,3 +143,4 @@ class RoomCreateSerializer(serializers.ModelSerializer):
         request.user.save()
         room.save()
         return room
+
