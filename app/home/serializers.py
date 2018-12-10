@@ -6,9 +6,7 @@ from .models import Room, Amenity, HostImages, Booking, Review, RoomPhoto
 class AmenitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Amenity
-        fields = ('value',
-                  'help_text',
-                  )
+        fields = ('pk', 'value', 'help_text',)
 
 
 class HostImageSerializer(serializers.ModelSerializer):
