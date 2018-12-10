@@ -1,7 +1,12 @@
 import datetime
+
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
+
+from members.models import NormalUser
 from .models import Room, Amenity, HostImages, Booking, Review, RoomPhoto
 
+User = get_user_model()
 
 class AmenitySerializer(serializers.ModelSerializer):
     class Meta:
@@ -127,7 +132,7 @@ class RoomCreateSerializer(serializers.ModelSerializer):
         model = Room
         fields = (
             'bathrooms', 'bedrooms', 'beds', 'room_name', 'room_type', 'room_and_property_type', 'public_address',
-            'city', 'price', 'lat', 'lng', 'room_info_1', 'room_info_2', 'room_info_3', 'room_info_4',
+            'city', 'price', 'lat', 'lng', 'room_info_1', 'room_info_2', 'room_info_3', 'room_info_4', 'person_capacity',
             'amenities',
         )
 
@@ -135,6 +140,7 @@ class RoomCreateSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         validated_data['room_host'] = request.user
         room = super().create(validated_data)
-        request.user.is_host=True
+        request.user.is_host = True
+        request.user.save()
         room.save()
         return room

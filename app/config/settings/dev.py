@@ -9,13 +9,13 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost',]
 secrets = json.load(open(os.path.join(SECRET_DIR, 'dev.json')))
 
 # DATABASE
-DATABASES = secrets['DATABASES']
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
+# DATABASES = secrets['DATABASES']
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 
 # STORAGE
@@ -25,5 +25,10 @@ AWS_STORAGE_BUCKET_NAME = secrets['AWS_STORAGE_BUCKET_NAME']
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_S3_REGION_NAME = 'ap-northeast-2'
 DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
-
 # STATICFILES_STORAGE = 'config.storages.StaticStorage'
+
+
+# DEV TOOLS
+INSTALLED_APPS += [
+    'django_extensions',
+]
