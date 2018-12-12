@@ -4,7 +4,7 @@ from rest_framework import status, generics, permissions, serializers
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from members.permissions import BearerAuthentication, IsOwner
+from members.permissions import BearerAuthentication, IsOwner, IsReviewer
 from .filters import RoomFilter
 from .models import Room, Booking, Review, Amenity
 from .serializers import RoomSerializer, BookingSerializer, ReviewSerializer, AmenitySerializer
@@ -35,7 +35,7 @@ class RoomDetailApiView(APIView):
     기본 페이지 구성을 위해 get 요청 시 전체 숙소 목록을 return
     """
     def get(self, request, pk, format=None):
-        room = Room.objects.prefetch_related('amenities', 'booking_info').select_related('hostimages', 'room_host', 'room_photos').get(pk=pk)
+        room = Room.objects.prefetch_related('amenities', 'booking_info',  'room_host', 'room_photos').select_related('hostimages').get(pk=pk)
         serializer = RoomSerializer(room)
         return Response(serializer.data)
 
@@ -125,7 +125,7 @@ class ReviewAPIView(APIView):
     authentication_classes = (BearerAuthentication,)
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
-        IsOwner,
+        IsReviewer,
     )
 
     def post(self, request, room_id):
