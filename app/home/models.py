@@ -19,7 +19,7 @@ class Room(models.Model):
     room_type = models.CharField(max_length=20)
     # 디테일 화면에서 이름 위에 표시되는 이름 (예. 공동주택의 개인실)
     room_and_property_type = models.CharField(max_length=20)
-    public_address = models.CharField(max_length=20)
+    public_address = models.CharField(max_length=100)
     city = models.CharField(max_length=50)
     price = models.IntegerField()
     lat = models.FloatField()

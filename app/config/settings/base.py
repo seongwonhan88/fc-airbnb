@@ -56,12 +56,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
-#debug-toolbar
-# INTERNAL_IPS = [
-#     '127.0.0.1', 'localhost',
-# ]
+
 
 ROOT_URLCONF = 'config.urls'
 
@@ -109,6 +105,8 @@ REST_FRAMEWORK = {
         'members.permissions.BearerAuthentication',),
     'DEFAULT_PERMISSION_CLASSES': (
             'rest_framework.permissions.IsAuthenticated',),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 30,
 }
 
 

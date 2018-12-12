@@ -4,16 +4,21 @@ from rest_framework import status, generics, permissions
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from members.permissions import BearerAuthentication, IsOwner
+from members.permissions import BearerAuthentication, IsOwner, IsReviewer
 from .filters import RoomFilter
-from .models import Room, Booking, Review
-from .serializers import RoomSerializer, BookingSerializer, ReviewSerializer
+from .models import Room, Booking, Review, Amenity
+from .serializers import RoomSerializer, BookingSerializer, ReviewSerializer, AmenitySerializer
+
+
+class AmenityAPIView(generics.ListAPIView):
+    queryset = Amenity.objects.all()
+    serializer_class = AmenitySerializer
 
 
 class RoomListingApiView(APIView):
 
     def get(self, request, format=None):
-        room = Room.objects.all().prefetch_related('amenities').select_related('hostimages')
+        room = Room.objects.all().prefetch_related('amenities', 'room_photos').select_related('hostimages', 'room_host')
         serializer = RoomSerializer(room, many=True)
         return Response(serializer.data)
 
@@ -30,7 +35,7 @@ class RoomDetailApiView(APIView):
     기본 페이지 구성을 위해 get 요청 시 전체 숙소 목록을 return
     """
     def get(self, request, pk, format=None):
-        room = Room.objects.prefetch_related('amenities', 'booking_info').select_related('hostimages').get(pk=pk)
+        room = Room.objects.prefetch_related('amenities', 'booking_info',  'room_host', 'room_photos').select_related('hostimages').get(pk=pk)
         serializer = RoomSerializer(room)
         return Response(serializer.data)
 
@@ -41,7 +46,7 @@ class RoomApiView(generics.ListAPIView):
     해당 뷰를 사용하면 url param값에 주는 조건대로 검색이 가능
     filter_class 에는 customize 한 필터들을 적용
     """
-    queryset = Room.objects.all().prefetch_related('amenities').select_related('hostimages')
+    queryset = Room.objects.all().prefetch_related('amenities', 'booking_info', 'room_photos', 'room_host').select_related('hostimages')
     serializer_class = RoomSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filter_class = RoomFilter
@@ -122,7 +127,8 @@ class UserReviewListAPIView(APIView):
 class ReviewCreateAPIView(APIView):
     authentication_classes = (BearerAuthentication,)
     permission_classes = (
-        IsOwner,
+        permissions.IsAuthenticatedOrReadOnly,
+        IsReviewer,
     )
 
     def post(self, request, room_id):
