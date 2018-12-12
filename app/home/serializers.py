@@ -52,7 +52,7 @@ class BookingSerializer(serializers.ModelSerializer):
         guest = data['num_guest']
 
         # 비교 대상
-        room = Room.objects.get(room_name=data['room'])
+        room = data['room']
         room_capacity = room.person_capacity
 
         if chi < now:
@@ -114,6 +114,7 @@ class RoomSerializer(serializers.ModelSerializer):
                   'room_info_3',
                   'room_info_4',
                   'created_at',
+                  'rate_average',
                   # 아래부터 외부모델 연결 필드 값
                   'amenities',
                   'hostimages',
@@ -134,6 +135,7 @@ class ReviewSerializer(serializers.ModelSerializer):
             'guest',
             'comment',
             'created_at',
+            'grade'
         )
 
 

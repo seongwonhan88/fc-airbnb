@@ -155,3 +155,66 @@ class ReviewAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
+
+
+class RoomReviewListAPIView(APIView):
+    # 해당 집 모든 후기 목
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+    )
+
+    # 해당 집 모든 후기 목록
+    def get(self, request):
+        review = Review.objects.filter(room_id=request.data.get('review_id'))
+        review = Review.objects.filter(room_id=request.data.get('room_id'))
+        serializer = ReviewSerializer(review, many=True)
+        return Response(serializer.data)
+
+
+class UserReviewListAPIView(APIView):
+    # 로그인 유저가 작성한 후기 목록을 보여줌
+    # 유저 본인이 작성한 후기 목록을 보여줌
+    authentication_classes = (BearerAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        user = request.auth.user_id
+        review = Review.objects.filter(guest_id=user)
+        serializer = ReviewSerializer(review, many=True)
+        return Response(serializer.data)
+
+
+class ReviewCreateAPIView(APIView):
+    authentication_classes = (BearerAuthentication,)
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwner,
+    )
+
+    def post(self, request, room_id):
+        user = request.auth.user_id
+        serializer = ReviewSerializer(data={**request.data, 'guest': user, 'room': room_id}, )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ReviewDelPatchAPIView(APIView):
+    authentication_classes = (BearerAuthentication,)
+    permission_classes = (IsOwner,)
+
+    def delete(self, request):
+        review = get_object_or_404(Review, id=request.data.get('review_id'), guest=request.user)
+        review.delete()
+        context = {
+            "message": "정상적으로 후기를 삭제했습니다."
+        }
+        return Response(context, status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request):
+        review = get_object_or_404(Review, id=request.data.get('review_id'), guest=request.user)
+        serializer = ReviewSerializer(review, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        return Response(serializer.data)

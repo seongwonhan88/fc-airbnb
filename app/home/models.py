@@ -1,5 +1,8 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import Avg
+from rest_framework.compat import MaxValueValidator
 
 from members.models import NormalUser, HostUser
 
@@ -7,6 +10,7 @@ User = get_user_model()
 
 
 class Room(models.Model):
+    rate_average = models.DecimalField(blank=True, null=True, max_digits=5, decimal_places=1)
     bathrooms = models.IntegerField()
     bedrooms = models.IntegerField()
     beds = models.IntegerField()
@@ -71,8 +75,17 @@ class HostImages(models.Model):
 
 
 class Review(models.Model):
+    grade = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     guest = models.ForeignKey(NormalUser, on_delete=models.CASCADE)
     comment = models.TextField()
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        # 후기 남기고 평점 남기면 바로 계산하여 저장
+        super().save(*args, **kwargs)
+        average = Review.objects.filter(room_id=self.room.pk).aggregate(Avg('grade'))
+        room_rate = Room.objects.get(pk=self.room.pk)
+        room_rate.rate_average = average['grade__avg']
+        room_rate.save()
