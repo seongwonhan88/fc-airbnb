@@ -1,6 +1,6 @@
 import datetime
 from django_filters import rest_framework as filters
-from rest_framework import status, generics, permissions, serializers
+from rest_framework import status, generics, permissions
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -23,7 +23,6 @@ class RoomListingApiView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class RoomDetailApiView(APIView):
@@ -98,15 +97,18 @@ class BookingCancelAPIView(APIView):
 
 
 class RoomReviewListAPIView(APIView):
-    # 해당 집 모든 후기 목
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+    )
+    # 해당 집 모든 후기 목록
     def get(self, request):
-        review = Review.objects.filter(room_id=request.data.get('review_id'))
+        review = Review.objects.filter(room_id=request.data.get('room_id'))
         serializer = ReviewSerializer(review, many=True)
         return Response(serializer.data)
 
 
 class UserReviewListAPIView(APIView):
-    # 로그인 유저가 작성한 후기 목록을 보여줌
+    # 유저 본인이 작성한 후기 목록을 보여줌
     authentication_classes = (BearerAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -117,10 +119,9 @@ class UserReviewListAPIView(APIView):
         return Response(serializer.data)
 
 
-class ReviewAPIView(APIView):
+class ReviewCreateAPIView(APIView):
     authentication_classes = (BearerAuthentication,)
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
         IsOwner,
     )
 
@@ -132,22 +133,22 @@ class ReviewAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, room_id):
-        # pk = request.data.get('pk')
-        if not room_id:
-            raise serializers.ValidationError({"detail": "pk가 전송되지 않았습니다."})
-        review = get_object_or_404(Review, pk=room_id)
+
+class ReviewDelPatchAPIView(APIView):
+    authentication_classes = (BearerAuthentication,)
+    permission_classes = (IsOwner,)
+
+    def delete(self, request):
+        review = get_object_or_404(Review, id=request.data.get('review_id'), guest=request.user)
         review.delete()
         context = {
-            "message": "후기를 삭제했습니다."
+            "message": "정상적으로 후기를 삭제했습니다."
         }
         return Response(context, status=status.HTTP_204_NO_CONTENT)
 
-    def patch(self, request, room_id):
-        review = Review.objects.get(pk=room_id)
-        if not room_id:
-            raise serializers.ValidationError({"detail": "해당 Review가 없습니다"})
+    def patch(self, request):
+        review = get_object_or_404(Review, id=request.data.get('review_id'), guest=request.user)
         serializer = ReviewSerializer(review, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+        return Response(serializer.data)

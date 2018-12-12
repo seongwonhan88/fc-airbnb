@@ -1,6 +1,6 @@
 import datetime
 from rest_framework import serializers
-from .models import Room, Amenity, HostImages, Booking, Review
+from .models import Room, Amenity, HostImages, Booking, Review, RoomPhoto
 
 
 class AmenitySerializer(serializers.ModelSerializer):
@@ -48,7 +48,7 @@ class BookingSerializer(serializers.ModelSerializer):
         guest = data['num_guest']
 
         # 비교 대상
-        room = Room.objects.get(room_name=data['room'])
+        room = data['room']
         room_capacity = room.person_capacity
 
         if chi < now:
@@ -66,17 +66,27 @@ class BookingSerializer(serializers.ModelSerializer):
         return data
 
 
+class RoomPhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoomPhoto
+        fields = (
+            'room_photo',
+        )
+
+
 class RoomSerializer(serializers.ModelSerializer):
     hostimages = HostImageSerializer()
     amenities = serializers.StringRelatedField(many=True, read_only=True)
-    room_photo = serializers.SerializerMethodField()
+    room_photos = RoomPhotoSerializer(many=True, read_only=True)
+    # room_photo = serializers.SerializerMethodField()
 
-    def get_room_photo(self, obj):
-        return obj.room_photos.values_list('room_photo', flat=True)
+    # def get_room_photo(self, obj):
+    #     return obj.room_photos.values_list('room_photo', flat=True)
 
     class Meta:
         model = Room
         fields = ('pk',
+                  'rate_average',
                   'bathrooms',
                   'bedrooms',
                   'beds',
@@ -97,7 +107,7 @@ class RoomSerializer(serializers.ModelSerializer):
                   # 아래부터 외부모델 연결 필드 값
                   'amenities',
                   'hostimages',
-                  'room_photo',
+                  'room_photos',
                   )
         read_only_fields = (
             'hostimages',
@@ -111,6 +121,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = (
             'room',
             'guest',
+            'grade',
             'comment',
             'created_at',
         )

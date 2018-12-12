@@ -10,6 +10,7 @@ secrets = json.load(open(os.path.join(SECRET_DIR, 'dev.json')))
 
 # DATABASE
 # DATABASES = secrets['DATABASES']
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
