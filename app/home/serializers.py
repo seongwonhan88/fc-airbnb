@@ -1,8 +1,6 @@
 import datetime
-
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-
 from members.models import HostUser
 from .models import Room, Amenity, HostImages, Booking, Review, RoomPhoto
 
@@ -52,7 +50,7 @@ class BookingSerializer(serializers.ModelSerializer):
         guest = data['num_guest']
 
         # 비교 대상
-        room = Room.objects.get(room_name=data['room'])
+        room = data['room']
         room_capacity = room.person_capacity
 
         if chi < now:
@@ -91,12 +89,14 @@ class RoomSerializer(serializers.ModelSerializer):
     amenities = serializers.StringRelatedField(many=True, read_only=True)
     room_photos = RoomPhotoSerializer(many=True, read_only=True)
     room_host = RoomHostSerializer(read_only=True)
+
     def get_room_photo(self, obj):
         return obj.room_photos.values_list('room_photos', flat=True)
 
     class Meta:
         model = Room
         fields = ('pk',
+                  'rate_average',
                   'bathrooms',
                   'bedrooms',
                   'beds',
@@ -119,6 +119,7 @@ class RoomSerializer(serializers.ModelSerializer):
                   'hostimages',
                   'room_photos',
                   'room_host'
+
                   )
         read_only_fields = (
             'hostimages',
@@ -132,6 +133,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = (
             'room',
             'guest',
+            'grade',
             'comment',
             'created_at',
         )
