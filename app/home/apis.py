@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from members.permissions import BearerAuthentication, IsOwner, IsReviewer
 from .filters import RoomFilter
 from .models import Room, Booking, Review, Amenity
-from .serializers import RoomSerializer, BookingSerializer, ReviewSerializer, AmenitySerializer
+from .serializers import RoomSerializer, BookingSerializer, ReviewSerializer, AmenitySerializer, RoomDetailSerializer
 
 
 class AmenityAPIView(generics.ListAPIView):
@@ -36,7 +36,7 @@ class RoomDetailApiView(APIView):
     """
     def get(self, request, pk, format=None):
         room = Room.objects.prefetch_related('amenities', 'booking_info',  'room_host', 'room_photos').select_related('hostimages').get(pk=pk)
-        serializer = RoomSerializer(room)
+        serializer = RoomDetailSerializer(room)
         return Response(serializer.data)
 
 
