@@ -15,11 +15,10 @@ User = get_user_model()
 
 
 class UserApiView(APIView):
-    # 인증 및 권한은 front/ios에서 token 정리가 되면 해제
-    # permission_classes = (permissions.IsAuthenticated,)
-    # authentication_classes = (BearerAuthentication,)
-    def get(self, request, pk):
-        user = NormalUser.user_objects.get(pk=pk)
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (BearerAuthentication,)
+    def get(self, request):
+        user = NormalUser.user_objects.get(username=request.user)
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
