@@ -77,12 +77,12 @@ class BookingSerializer(serializers.ModelSerializer):
         return data
 
 
-class RoomPhotoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RoomPhoto
-        fields = (
-            'room_photo',
-        )
+# class RoomPhotoSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = RoomPhoto
+#         fields = (
+#             'room_photo',
+#         )
 
 
 class RoomHostSerializer(serializers.ModelSerializer):
@@ -93,12 +93,23 @@ class RoomHostSerializer(serializers.ModelSerializer):
         )
 
 
+class RoomPhotoRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.room_photo.url
+
+
 class RoomSerializer(serializers.ModelSerializer):
     hostimages = HostImageSerializer(read_only=True)
     amenities = serializers.StringRelatedField(many=True, read_only=True)
-    room_photos = RoomPhotoSerializer(many=True, read_only=True)
+    # room_photos = RoomPhotoSerializer(many=True, read_only=True)
     room_host = RoomHostSerializer(read_only=True)
     reserved = BookingDateRelatedField(many=True, read_only=True)
+
+    room_photos = RoomPhotoRelatedField(many=True, read_only=True)
+    # room_photos = serializers.SerializerMethodField()
+    #
+    # def get_room_photos(self, obj):
+    #     return obj.room_photos.values_list('room_photo', flat=True)
 
     class Meta:
         model = Room
