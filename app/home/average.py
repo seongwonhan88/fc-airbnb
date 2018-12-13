@@ -7,7 +7,7 @@ from .models import Room
 
 class CityAveragePriceAPIView(APIView):
     CITIES = (
-        '서울', '부산', '제주'
+        '서울', '부산', '제주', '종로', '마포구', '수영구', '해운대', '중구'
     )
 
     def get(self, request):
