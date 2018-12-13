@@ -10,7 +10,6 @@ from .models import Room, Booking, Review, Amenity, BookingDates
 from .serializers import RoomSerializer, BookingSerializer, ReviewSerializer, AmenitySerializer
 
 
-
 class AmenityAPIView(generics.ListAPIView):
     queryset = Amenity.objects.all()
     serializer_class = AmenitySerializer

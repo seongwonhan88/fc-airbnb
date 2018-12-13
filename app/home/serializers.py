@@ -77,12 +77,12 @@ class BookingSerializer(serializers.ModelSerializer):
         return data
 
 
-# class RoomPhotoSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = RoomPhoto
-#         fields = (
-#             'room_photo',
-#         )
+class RoomPhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoomPhoto
+        fields = (
+            'room_photo',
+        )
 
 
 class RoomHostSerializer(serializers.ModelSerializer):
@@ -90,28 +90,6 @@ class RoomHostSerializer(serializers.ModelSerializer):
         model = HostUser
         fields = (
             'pk', 'first_name', 'last_name', 'is_host', 'host_introduction', 'img_profile'
-        )
-
-class RoomDetailSerializer(serializers.ModelSerializer):
-    hostimages = HostImageSerializer(read_only=True)
-    amenities = serializers.StringRelatedField(many=True, read_only=True)
-    room_photos = RoomPhotoSerializer(many=True, read_only=True)
-    room_host = RoomHostSerializer(read_only=True)
-    booking_info = BookingSerializer(many=True)
-    def get_room_photo(self, obj):
-        return obj.room_photos.values_list('room_photos', flat=True)
-
-    class Meta:
-        model = Room
-        fields = ('pk', 'bathrooms', 'bedrooms','beds','person_capacity','room_name','room_type','room_and_property_type',
-                  'public_address','city','price','lat','lng','room_info_1','room_info_2','room_info_3','room_info_4',
-                  'created_at','rate_average',
-                  # 아래부터 외부모델 연결 필드 값
-                  'amenities','hostimages','room_photos','room_host', 'booking_info'
-                  )
-        read_only_fields = (
-            'hostimages',
-            'booking_info',
         )
 
 
@@ -126,12 +104,8 @@ class RoomSerializer(serializers.ModelSerializer):
     # room_photos = RoomPhotoSerializer(many=True, read_only=True)
     room_host = RoomHostSerializer(read_only=True)
     reserved = BookingDateRelatedField(many=True, read_only=True)
-
     room_photos = RoomPhotoRelatedField(many=True, read_only=True)
-    # room_photos = serializers.SerializerMethodField()
-    #
-    # def get_room_photos(self, obj):
-    #     return obj.room_photos.values_list('room_photo', flat=True)
+
 
     class Meta:
         model = Room
