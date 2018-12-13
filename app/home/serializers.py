@@ -55,6 +55,13 @@ class BookingSerializer(serializers.ModelSerializer):
         room = data['room']
         room_capacity = room.person_capacity
 
+        # reserved_list = []
+        # booking_q = Booking.objects.filter(room_id=)
+        # for booking in booking_q:
+        #     reserved_dates = booking.reserved_dates.all()
+        #     for date in reserved_dates:
+        #         reserved_list.append(date.reserved_date)
+
         if chi < now:
             raise ValueError('오늘보다 이전 날을 선택할 수 없습니다')
 
@@ -91,12 +98,12 @@ class RoomSerializer(serializers.ModelSerializer):
     amenities = serializers.StringRelatedField(many=True, read_only=True)
     room_photos = RoomPhotoSerializer(many=True, read_only=True)
     room_host = RoomHostSerializer(read_only=True)
-    def get_room_photo(self, obj):
-        return obj.room_photos.values_list('room_photos', flat=True)
+    reserved = BookingDateRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Room
         fields = ('pk',
+                  'rate_average',
                   'bathrooms',
                   'bedrooms',
                   'beds',
@@ -119,7 +126,8 @@ class RoomSerializer(serializers.ModelSerializer):
                   'amenities',
                   'hostimages',
                   'room_photos',
-                  'room_host'
+                  'room_host',
+                  'reserved'
                   )
         read_only_fields = (
             'hostimages',
