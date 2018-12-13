@@ -84,7 +84,6 @@ class BookingAPIView(APIView):
                 day = datetime.timedelta(i)
                 date = booking.check_in_date + day
                 BookingDates.objects.create(reserved_date=date, room=room, booking=booking)
-                # booking.reserved_dates.create(reserved_date=date)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
