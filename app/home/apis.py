@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from members.permissions import BearerAuthentication, IsOwner, IsReviewer
 from .filters import RoomFilter
-from .models import Room, Booking, Review, Amenity
-from .serializers import RoomSerializer, BookingSerializer, ReviewSerializer, AmenitySerializer, RoomDetailSerializer
+from .models import Room, Booking, Review, Amenity, BookingDates
+from .serializers import RoomSerializer, BookingSerializer, ReviewSerializer, AmenitySerializer
 
 
 class AmenityAPIView(generics.ListAPIView):
@@ -35,8 +35,8 @@ class RoomDetailApiView(APIView):
     기본 페이지 구성을 위해 get 요청 시 전체 숙소 목록을 return
     """
     def get(self, request, pk, format=None):
-        room = Room.objects.prefetch_related('amenities', 'booking_info',  'room_host', 'room_photos').select_related('hostimages').get(pk=pk)
-        serializer = RoomDetailSerializer(room)
+        room = Room.objects.prefetch_related('amenities', 'booking_info',  'room_host', 'room_photos', 'reserved').select_related('hostimages').get(pk=pk)
+        serializer = RoomSerializer(room)
         return Response(serializer.data)
 
 
@@ -76,10 +76,14 @@ class BookingAPIView(APIView):
             cho = booking.check_out_date
             delta = cho - chi
             days = delta.days
+
+            room_id = request.data['room']
+            room = Room.objects.get(pk=room_id)
+
             for i in range(1, days):
                 day = datetime.timedelta(i)
                 date = booking.check_in_date + day
-                booking.reserved_dates.create(reserved_date=date)
+                BookingDates.objects.create(reserved_date=date, room=room, booking=booking)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -102,7 +106,7 @@ class BookingCancelAPIView(APIView):
 
 
 class RoomReviewListAPIView(APIView):
-    # 해당 집 모든 후기 목
+    # 해당 집 모든 후기 목록
     def get(self, request):
         review = Review.objects.filter(room_id=request.data.get('review_id'))
         serializer = ReviewSerializer(review, many=True)

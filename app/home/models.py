@@ -65,7 +65,11 @@ class Booking(models.Model):
 
 class BookingDates(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='reserved_dates')
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='reserved')
     reserved_date = models.DateField()
+
+    class Meta:
+        ordering = ['reserved_date',]
 
 
 class HostImages(models.Model):

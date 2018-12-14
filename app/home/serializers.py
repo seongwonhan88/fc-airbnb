@@ -55,6 +55,13 @@ class BookingSerializer(serializers.ModelSerializer):
         room = data['room']
         room_capacity = room.person_capacity
 
+        # reserved_list = []
+        # booking_q = Booking.objects.filter(room_id=)
+        # for booking in booking_q:
+        #     reserved_dates = booking.reserved_dates.all()
+        #     for date in reserved_dates:
+        #         reserved_list.append(date.reserved_date)
+
         if chi < now:
             raise ValueError('오늘보다 이전 날을 선택할 수 없습니다')
 
@@ -85,40 +92,25 @@ class RoomHostSerializer(serializers.ModelSerializer):
             'pk', 'first_name', 'last_name', 'is_host', 'host_introduction', 'img_profile'
         )
 
-class RoomDetailSerializer(serializers.ModelSerializer):
-    hostimages = HostImageSerializer(read_only=True)
-    amenities = serializers.StringRelatedField(many=True, read_only=True)
-    room_photos = RoomPhotoSerializer(many=True, read_only=True)
-    room_host = RoomHostSerializer(read_only=True)
-    booking_info = BookingSerializer(many=True)
-    def get_room_photo(self, obj):
-        return obj.room_photos.values_list('room_photos', flat=True)
 
-    class Meta:
-        model = Room
-        fields = ('pk', 'bathrooms', 'bedrooms','beds','person_capacity','room_name','room_type','room_and_property_type',
-                  'public_address','city','price','lat','lng','room_info_1','room_info_2','room_info_3','room_info_4',
-                  'created_at','rate_average',
-                  # 아래부터 외부모델 연결 필드 값
-                  'amenities','hostimages','room_photos','room_host', 'booking_info'
-                  )
-        read_only_fields = (
-            'hostimages',
-            'booking_info',
-        )
+class RoomPhotoRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.room_photo.url
 
 
 class RoomSerializer(serializers.ModelSerializer):
     hostimages = HostImageSerializer(read_only=True)
     amenities = serializers.StringRelatedField(many=True, read_only=True)
-    room_photos = RoomPhotoSerializer(many=True, read_only=True)
+    # room_photos = RoomPhotoSerializer(many=True, read_only=True)
     room_host = RoomHostSerializer(read_only=True)
-    def get_room_photo(self, obj):
-        return obj.room_photos.values_list('room_photos', flat=True)
+    reserved = BookingDateRelatedField(many=True, read_only=True)
+    room_photos = RoomPhotoRelatedField(many=True, read_only=True)
+
 
     class Meta:
         model = Room
         fields = ('pk',
+                  'rate_average',
                   'bathrooms',
                   'bedrooms',
                   'beds',
@@ -141,7 +133,8 @@ class RoomSerializer(serializers.ModelSerializer):
                   'amenities',
                   'hostimages',
                   'room_photos',
-                  'room_host'
+                  'room_host',
+                  'reserved'
                   )
         read_only_fields = (
             'hostimages',
