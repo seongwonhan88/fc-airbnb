@@ -42,9 +42,9 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'members.User'
 
 
-# CORS settings: Frontend DNS 생성 시 추가필요
+# CORS settings: Frontend DNS 추가
 CORS_ORIGIN_WHITELIST = (
-    'localhost:3000',
+    'localhost:3000', 'fastbnb.netlify.com'
 )
 
 MIDDLEWARE = [
