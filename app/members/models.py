@@ -2,19 +2,19 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 
 
-class NormalUserManager(UserManager):
+class NormalUserManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(is_host=False)
 
 
-class HostUserManager(UserManager):
+class HostUserManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(is_host=True)
 
 
 class User(AbstractUser):
     #매니저 설정
-    objects = models.Manager()
+    objects = UserManager()
     user_objects = NormalUserManager()
     host_objects = HostUserManager()
 
