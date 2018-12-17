@@ -104,7 +104,7 @@ class BookingCancelAPIView(APIView):
 class RoomReviewListAPIView(APIView):
     # 해당 집 모든 후기 목
     def get(self, request):
-        review = Review.objects.filter(room_id=request.data.get('review_id'))
+        review = Review.objects.filter(room_id=request.data.get('room_id'))
         serializer = ReviewSerializer(review, many=True)
         return Response(serializer.data)
 
