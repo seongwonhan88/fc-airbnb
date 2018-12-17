@@ -158,20 +158,6 @@ class ReviewAPIView(APIView):
             return Response(serializer.data)
 
 
-class RoomReviewListAPIView(APIView):
-    # 해당 집 모든 후기 목
-    permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
-    )
-
-    # 해당 집 모든 후기 목록
-    def get(self, request):
-        review = Review.objects.filter(room_id=request.data.get('review_id'))
-        review = Review.objects.filter(room_id=request.data.get('room_id'))
-        serializer = ReviewSerializer(review, many=True)
-        return Response(serializer.data)
-
-
 class UserReviewListAPIView(APIView):
     # 로그인 유저가 작성한 후기 목록을 보여줌
     # 유저 본인이 작성한 후기 목록을 보여줌
@@ -185,12 +171,18 @@ class UserReviewListAPIView(APIView):
         return Response(serializer.data)
 
 
-class ReviewCreateAPIView(APIView):
+class ReviewCreateListAPIView(APIView):
     authentication_classes = (BearerAuthentication,)
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
         IsOwner,
     )
+
+    def get(self, request, room_id):
+        review = Review.objects.filter(room_id=room_id)
+        serializer = ReviewSerializer(review, many=True)
+        return Response(serializer.data)
+
 
     def post(self, request, room_id):
         user = request.auth.user_id
