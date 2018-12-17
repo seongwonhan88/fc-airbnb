@@ -1,9 +1,9 @@
 from django.urls import path
 
 from home.average import CityAveragePriceAPIView
-from .apis import RoomDetailApiView, RoomApiView, BookingAPIView, BookingCancelAPIView,\
+from .apis import RoomDetailApiView, RoomApiView, BookingAPIView, BookingCancelAPIView, \
     UserReviewListAPIView, RoomReviewListAPIView, AmenityAPIView, RoomListingApiView, ReviewCreateAPIView, \
-    ReviewDelPatchAPIView
+    ReviewDelPatchAPIView, ReceiptAPIView
 
 urlpatterns = [
     path('rooms/', RoomListingApiView.as_view()),
@@ -17,4 +17,5 @@ urlpatterns = [
     path('review/del-patch/', ReviewDelPatchAPIView.as_view(), name='review-del-patch'),
     path('amenities/', AmenityAPIView.as_view(), name='amenity-view'),
     path('average/', CityAveragePriceAPIView.as_view(), name='average'),
+    path('receipt/<int:pk>/', ReceiptAPIView.as_view(), name='receipt'),
 ]

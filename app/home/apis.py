@@ -7,7 +7,8 @@ from rest_framework.views import APIView
 from members.permissions import BearerAuthentication, IsOwner, IsReviewer
 from .filters import RoomFilter
 from .models import Room, Booking, Review, Amenity
-from .serializers import RoomSerializer, BookingSerializer, ReviewSerializer, AmenitySerializer, RoomDetailSerializer
+from .serializers import RoomSerializer, BookingSerializer, ReviewSerializer, AmenitySerializer, RoomDetailSerializer, \
+    ReceiptSerializer
 
 
 class AmenityAPIView(generics.ListAPIView):
@@ -218,3 +219,11 @@ class ReviewDelPatchAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
         return Response(serializer.data)
+
+
+class ReceiptAPIView(APIView):
+    def get(self, request, pk, format=None):
+        user = request.user.id
+        booking = Booking.objects.get(pk=pk, guest_id=user)
+        serializer = ReceiptSerializer(booking)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -196,3 +196,28 @@ class RoomCreateSerializer(serializers.ModelSerializer):
                 num += 1
 
         return room
+
+
+class ReceiptSerializer(serializers.ModelSerializer):
+    room_city = serializers.ReadOnlyField(source='room.city')
+    room_price = serializers.ReadOnlyField(source='room.price')
+    room_public_address = serializers.ReadOnlyField(source='room.public_address')
+    room_host = serializers.ReadOnlyField(source='room.room_host.username')
+    room_name = serializers.ReadOnlyField(source='room.room_name')
+
+    class Meta:
+        model = Booking
+        fields = (
+            'id',
+            'room',
+            'guest',
+            'num_guest',
+            'check_in_date',
+            'check_out_date',
+            'room_city',
+            'room_price',
+            'room_public_address',
+            'room_host',
+            'room_name',
+            'created_date',
+        )
