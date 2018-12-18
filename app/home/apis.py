@@ -214,6 +214,8 @@ class ReviewDelPatchAPIView(APIView):
 
 
 class ReceiptAPIView(APIView):
+    authentication_classes = (BearerAuthentication,)
+
     def get(self, request, pk, format=None):
         user = request.user.id
         booking = Booking.objects.get(pk=pk, guest_id=user)
