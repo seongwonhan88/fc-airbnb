@@ -34,7 +34,7 @@ class AuthTokenView(APIView):
         if NormalUser.user_objects.filter(username=user_id).exists():
             user = NormalUser.user_objects.get(username=user_id)
         else:
-            user = NormalUser.user_objects.create_user(username=user_id, first_name=first_name, last_name=last_name, email=email)
+            user = User.objects.create_user(username=user_id, first_name=first_name, last_name=last_name, email=email)
         token = Token.objects.get_or_create(user=user)[0]
         data = {
             'token': token.key,
