@@ -1,11 +1,14 @@
+amqp==2.3.2
 appnope==0.1.0
 awsebcli==3.14.6
 backcall==0.1.0
 beautifulsoup4==4.6.3
+billiard==3.5.0.5
 blessed==1.15.0
 boto3==1.9.47
 botocore==1.12.47
 cached-property==1.5.1
+celery==4.2.1
 cement==2.8.2
 certifi==2018.10.15
 chardet==3.0.4
@@ -18,6 +21,7 @@ django-extensions==2.1.4
 django-filter==2.0.0
 django-rest-auth==0.9.3
 django-storages==1.7.1
+django-url-filter==0.3.10
 djangorestframework==3.9.0
 docker==3.5.1
 docker-compose==1.21.2
@@ -25,12 +29,14 @@ docker-pycreds==0.3.0
 dockerpty==0.4.1
 docopt==0.6.2
 docutils==0.14
+enum-compat==0.0.2
 idna==2.6
 ipython==7.1.1
 ipython-genutils==0.2.0
 jedi==0.13.1
 jmespath==0.9.3
 jsonschema==2.6.0
+kombu==4.2.2.post1
 lxml==4.2.5
 parso==0.3.1
 pathspec==0.5.5
@@ -56,5 +62,6 @@ texttable==0.9.1
 traitlets==4.3.2
 urllib3==1.22
 uWSGI==2.0.17.1
+vine==1.1.4
 wcwidth==0.1.7
 websocket-client==0.54.0
