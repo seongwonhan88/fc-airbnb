@@ -107,7 +107,11 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 30,
 }
 
-
+# CELERY SETTINGS
+BROKER_URL = 'ampq://guest:guest@localhost:5672//'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 # Internationalization
 LANGUAGE_CODE = 'ko-kr'
