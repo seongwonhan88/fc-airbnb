@@ -4,6 +4,8 @@ from rest_framework import status, generics, permissions, serializers
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from config.celery import app
 from members.permissions import BearerAuthentication, IsOwner, IsReviewer
 from .filters import RoomFilter
 from .models import Room, Booking, Review, Amenity
@@ -17,7 +19,7 @@ class AmenityAPIView(generics.ListAPIView):
 
 
 class RoomListingApiView(APIView):
-
+    @app.task(bind=True)
     def get(self, request, format=None):
         room = Room.objects.all().prefetch_related('amenities', 'room_photos').select_related('hostimages', 'room_host')
         serializer = RoomSerializer(room, many=True)
