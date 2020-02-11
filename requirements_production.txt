@@ -1,5 +1,5 @@
 boto3<1.10
-Django<2.2
+Django<2.3
 django-storages<1.8
 Pillow<5.4
 pytz<2018.8
