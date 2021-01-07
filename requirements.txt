@@ -37,7 +37,7 @@ jedi==0.13.1
 jmespath==0.9.3
 jsonschema==2.6.0
 kombu==4.2.2.post1
-lxml==4.2.5
+lxml==4.6.2
 parso==0.3.1
 pathspec==0.5.5
 pexpect==4.6.0
